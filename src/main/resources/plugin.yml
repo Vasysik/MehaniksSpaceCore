@@ -1,0 +1,12 @@
+name: MehaniksSpaceCore
+version: '${project.version}'
+main: vasys.mehaniksspacecore.MehaniksSpaceCore
+api-version: '1.20'
+load: STARTUP
+commands:
+  ms:
+    aliases: [ms, mehaniksspace, msc, mehaniksspacecore]
+    description: MehaniksSpaceCore command
+    usage: "Usage: /<command> [list|reload|getitems]"
+    permission: mehaniks.space
+    permission-message: You do not have permission to use this command.
