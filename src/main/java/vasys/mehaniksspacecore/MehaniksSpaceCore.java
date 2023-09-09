@@ -1,5 +1,6 @@
 package vasys.mehaniksspacecore;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -14,6 +15,7 @@ import java.util.logging.Level;
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
     public static List<String> MehaniksSpaceWorldList = new ArrayList<String>();
+    public static List<String> MehaniksSpaceGravityList = new ArrayList<String>();
     FileConfiguration config = this.getConfig();
     static public Boolean enabled = false;
     static public Boolean useMultiverseCore = false;
@@ -62,9 +64,5 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             return false;
         }
         return false;
-    }
-
-    static public void spaceMechanics(World world) {
-
     }
 }
