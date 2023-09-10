@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -15,7 +16,8 @@ import java.util.logging.Level;
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
     public static List<String> MehaniksSpaceWorldList = new ArrayList<String>();
-    public static List<String> MehaniksSpaceGravityList = new ArrayList<String>();
+    public static List<Integer> MehaniksSpaceGravityList = new ArrayList<Integer>();
+    public static List<Integer> MehaniksSpaceTemperatureList = new ArrayList<Integer>();
     FileConfiguration config = this.getConfig();
     static public Boolean enabled = false;
     static public Boolean useMultiverseCore = false;
@@ -26,6 +28,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MehaniksSpaceEvents(), this);
         enabled = config.getBoolean("enabled");
         useMultiverseCore = config.getBoolean("useMultiverseCore");
+        MehaniksSpaceItems.addRecipes();
         getLogger().log(Level.INFO, "Mars WorldGenerator was enabled successfully.");
     }
 

@@ -21,9 +21,11 @@ public class MehaniksSpaceEvents implements Listener {
 
         if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getPlayer().getWorld().getName())) {
             Player player = event.getPlayer();
-            int gravity = Integer.parseInt(MehaniksSpaceCore.MehaniksSpaceGravityList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName())));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity-1, true, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity/3)-1, true, false));
+            int gravity = MehaniksSpaceCore.MehaniksSpaceGravityList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName()));
+            if (gravity != 0) {
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
+            }
         }
 
         if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getFrom().getName())) {
@@ -43,22 +45,31 @@ public class MehaniksSpaceEvents implements Listener {
         if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getPlayer().getWorld().getName())) {
             Player player = event.getPlayer();
             if (player.getInventory().getHelmet() == null || !player.getInventory().getHelmet().getItemMeta().hasCustomModelData() || player.getInventory().getHelmet().getItemMeta().getCustomModelData() != 1001) {
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 63, true, false));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
-            } else {
-                player.removePotionEffect(PotionEffectType.WITHER);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
+            } else if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
+                player.removePotionEffect(PotionEffectType.POISON);
                 player.removePotionEffect(PotionEffectType.CONFUSION);
+                player.removePotionEffect(PotionEffectType.BLINDNESS);
             }
 
             if (player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() || player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
                     player.getInventory().getLeggings() == null || !player.getInventory().getLeggings().getItemMeta().hasCustomModelData() || player.getInventory().getLeggings().getItemMeta().getCustomModelData() != 1001 ||
                     player.getInventory().getBoots() == null || !player.getInventory().getBoots().getItemMeta().hasCustomModelData() || player.getInventory().getBoots().getItemMeta().getCustomModelData() != 1001) {
-                player.setFreezeTicks(10000);
-                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, 31, true, false));
-            } else {
-                player.setFreezeTicks(0);
+                int temperature = MehaniksSpaceCore.MehaniksSpaceTemperatureList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName()));
+                player.lockFreezeTicks(true);
+                player.setFreezeTicks(temperature * 10);
+                if (temperature != 0) {
+                    if (temperature < 0) {
+                        player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, Math.abs(temperature)-1, true, false));
+                    }
+                }
+            } else if (player.isFreezeTickingLocked()) {
+                player.lockFreezeTicks(false);
                 player.removePotionEffect(PotionEffectType.WITHER);
             }
+
         }
     }
 }
