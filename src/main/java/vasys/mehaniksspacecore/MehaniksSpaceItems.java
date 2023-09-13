@@ -2,8 +2,10 @@ package vasys.mehaniksspacecore;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -61,6 +63,8 @@ public class MehaniksSpaceItems {
         ArmorMeta spaceSuitHelmetMeta = (ArmorMeta) spaceSuitHelmet.getItemMeta();
         spaceSuitHelmetMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
         spaceSuitHelmetMeta.setCustomModelData(1001);
+        spaceSuitHelmetMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        spaceSuitHelmetMeta.setDisplayName(ChatColor.GRAY + "Space Suit Helmet");
         spaceSuitHelmet.setItemMeta(spaceSuitHelmetMeta);
         return spaceSuitHelmet;
     }
@@ -70,10 +74,12 @@ public class MehaniksSpaceItems {
         ArmorMeta spaceSuitChestplateMeta = (ArmorMeta) spaceSuitChestplate.getItemMeta();
         spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
         spaceSuitChestplateMeta.setCustomModelData(1001);
+        spaceSuitChestplateMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        spaceSuitChestplateMeta.setDisplayName(ChatColor.GRAY + "Space Suit Chestplate");
         List<String> lore = new ArrayList<>();
-        lore.add("");
         lore.add(ChatColor.WHITE + "0/1 oxygen tanks");
-        lore.add(ChatColor.BLUE + "[----------] 0/0");
+        lore.add(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "##########" + ChatColor.WHITE + "] 0/0");
+        lore.add(ChatColor.DARK_GRAY + "Tanks types: ");
         spaceSuitChestplateMeta.setLore(lore);
         spaceSuitChestplate.setItemMeta(spaceSuitChestplateMeta);
         return spaceSuitChestplate;
@@ -84,6 +90,8 @@ public class MehaniksSpaceItems {
         ArmorMeta spaceSuitLegginsMeta = (ArmorMeta) spaceSuitLeggins.getItemMeta();
         spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
         spaceSuitLegginsMeta.setCustomModelData(1001);
+        spaceSuitLegginsMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        spaceSuitLegginsMeta.setDisplayName(ChatColor.GRAY + "Space Suit Leggins");
         spaceSuitLeggins.setItemMeta(spaceSuitLegginsMeta);
         return spaceSuitLeggins;
     }
@@ -93,12 +101,14 @@ public class MehaniksSpaceItems {
         ArmorMeta spaceSuitBootsMeta = (ArmorMeta) spaceSuitBoots.getItemMeta();
         spaceSuitBootsMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
         spaceSuitBootsMeta.setCustomModelData(1001);
+        spaceSuitBootsMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
+        spaceSuitBootsMeta.setDisplayName(ChatColor.GRAY + "Space Suit Boots");
         spaceSuitBoots.setItemMeta(spaceSuitBootsMeta);
         return spaceSuitBoots;
     }
 
     public static ItemStack getIronOxygenTank() {
-        ItemStack oxygenTank = new ItemStack(Material.CARROT_ON_A_STICK);
+        ItemStack oxygenTank = new ItemStack(Material.NETHERITE_SCRAP);
         ItemMeta oxygenTankMeta = oxygenTank.getItemMeta();
         oxygenTankMeta.setCustomModelData(1001);
         oxygenTank.setItemMeta(oxygenTankMeta);

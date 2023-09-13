@@ -2,10 +2,13 @@ package vasys.mehaniksspacecore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.AbstractList;
@@ -30,6 +33,37 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         useMultiverseCore = config.getBoolean("useMultiverseCore");
         MehaniksSpaceItems.addRecipes();
         getLogger().log(Level.INFO, "Mars WorldGenerator was enabled successfully.");
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (String s : MehaniksSpaceWorldList) {
+                for (int j = 0; j < getServer().getWorld(s).getPlayers().size(); j++) {
+                    Player player = getServer().getWorld(s).getPlayers().get(j);
+                    if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
+                            player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
+                        ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
+                        List<String> loreOld = spaceSuitChestplateMeta.getLore();
+
+                        if (Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) > 0) {
+                            List<String> lore = new ArrayList<>();
+                            int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
+                            int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
+
+                            String oxygenBar = "";
+                            int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
+                            oxygenBar += ChatColor.BLUE + "#".repeat(oxPercent);
+                            int noOxPercent = 12 - oxygenBar.length();
+                            oxygenBar += ChatColor.DARK_GRAY + "#".repeat(noOxPercent);
+
+                            lore.add(loreOld.get(0));
+                            lore.add(ChatColor.WHITE + "[" + ChatColor.BLUE + "" + oxygenBar + "" + ChatColor.WHITE + "] " + oxygen + "/" + maxOxygen);
+                            lore.add(loreOld.get(2));
+                            spaceSuitChestplateMeta.setLore(lore);
+                            player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+                        }
+                    }
+                }
+            }
+        }, 100, 100);
     }
 
     @Override
@@ -61,6 +95,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank());
                 return true;
             }
             sender.sendMessage(ChatColor.RED + "ms !null");
