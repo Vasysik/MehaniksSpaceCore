@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -50,15 +52,19 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                             String oxygenBar = "";
                             int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
-                            oxygenBar += ChatColor.BLUE + "#".repeat(oxPercent);
+                            oxygenBar += ChatColor.BLUE + "■".repeat(oxPercent);
                             int noOxPercent = 12 - oxygenBar.length();
-                            oxygenBar += ChatColor.DARK_GRAY + "#".repeat(noOxPercent);
+                            oxygenBar += ChatColor.DARK_GRAY + "■".repeat(noOxPercent);
 
                             lore.add(loreOld.get(0));
                             lore.add(ChatColor.WHITE + "[" + ChatColor.BLUE + "" + oxygenBar + "" + ChatColor.WHITE + "] " + oxygen + "/" + maxOxygen);
                             lore.add(loreOld.get(2));
                             spaceSuitChestplateMeta.setLore(lore);
                             player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+                        } else {
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
                         }
                     }
                 }

@@ -77,9 +77,9 @@ public class MehaniksSpaceItems {
         spaceSuitChestplateMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         spaceSuitChestplateMeta.setDisplayName(ChatColor.GRAY + "Space Suit Chestplate");
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE + "0/1 oxygen tanks");
-        lore.add(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "##########" + ChatColor.WHITE + "] 0/0");
-        lore.add(ChatColor.DARK_GRAY + "Tanks types: ");
+        lore.add(ChatColor.WHITE + "0/2 oxygen tanks");
+        lore.add(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "■".repeat(10) + ChatColor.WHITE + "] 0/0");
+        lore.add(ChatColor.DARK_GRAY + "Tanks types:");
         spaceSuitChestplateMeta.setLore(lore);
         spaceSuitChestplate.setItemMeta(spaceSuitChestplateMeta);
         return spaceSuitChestplate;
@@ -108,9 +108,14 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getIronOxygenTank() {
-        ItemStack oxygenTank = new ItemStack(Material.NETHERITE_SCRAP);
+        ItemStack oxygenTank = new ItemStack(Material.CARROT_ON_A_STICK);
         ItemMeta oxygenTankMeta = oxygenTank.getItemMeta();
         oxygenTankMeta.setCustomModelData(1001);
+        oxygenTankMeta.setDisplayName(ChatColor.GRAY + "Oxygen Tank");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.WHITE + "type: 1");
+        lore.add(ChatColor.WHITE + "volume: 60");
+        oxygenTankMeta.setLore(lore);
         oxygenTank.setItemMeta(oxygenTankMeta);
         return oxygenTank;
     }

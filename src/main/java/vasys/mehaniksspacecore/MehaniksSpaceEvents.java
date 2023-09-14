@@ -109,30 +109,36 @@ public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onPlayerUse(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        if(player.getInventory().getItemInMainHand().getType() == Material.NETHERITE_SCRAP &&
+        if(player.getInventory().getItemInMainHand().getType() == Material.CARROT_ON_A_STICK &&
                 player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                player.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
                 player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
                 player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
             ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
             List<String> loreOld = spaceSuitChestplateMeta.getLore();
             if (Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[1]) > Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2))) {
-                player.getInventory().remove(MehaniksSpaceItems.getIronOxygenTank());
+                String tanksTypes = "";
+                if (loreOld.get(2).split(" ").length > 2) {
+                    tanksTypes = loreOld.get(2).split(" ")[2];
+                }
+                tanksTypes += player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1];
+                int addOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(1).split(" ")[1]);
+
+                player.getInventory().setItemInMainHand(null);
                 List<String> lore = new ArrayList<>();
 
-                Integer tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) + 1;
-                Integer oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) + 60;
-                Integer maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]) + 60;
-                String tanksTypes = "1";
+                int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) + 1;
+                int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) + addOxygen;
+                int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]) + addOxygen;
+
                 if (loreOld.get(2).split(" ").length > 2) {
                     tanksTypes = loreOld.get(2).split(" ")[2] + "1";
                 }
 
                 String oxygenBar = "";
-                Integer oxPercent = (oxygen / maxOxygen) * 10;
-                oxygenBar += "#".repeat(oxPercent);
-                Integer noOxPercent = 10 - oxygenBar.length();
-                oxygenBar += "#".repeat(noOxPercent);
+                int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
+                oxygenBar += ChatColor.BLUE + "■".repeat(oxPercent);
+                int noOxPercent = 12 - oxygenBar.length();
+                oxygenBar += ChatColor.DARK_GRAY + "■".repeat(noOxPercent);
 
                 lore.add(ChatColor.WHITE + "" + tanks + "/" + loreOld.get(0).split(" ")[0].split("/")[1] + " oxygen tanks");
                 lore.add(ChatColor.WHITE + "[" + ChatColor.BLUE + "" + oxygenBar + "" + ChatColor.WHITE + "] " + oxygen + "/" + maxOxygen);
