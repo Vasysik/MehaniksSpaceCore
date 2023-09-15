@@ -115,24 +115,21 @@ public class MehaniksSpaceEvents implements Listener {
                 player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
             ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
             List<String> loreOld = spaceSuitChestplateMeta.getLore();
-            if (Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[1]) > Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2))) {
+
+            if (Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[1]) > Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) && !player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0].equals("0")) {
                 String tanksTypes = "";
                 if (loreOld.get(2).split(" ").length > 2) {
-                    tanksTypes = loreOld.get(2).split(" ")[2];
+                    tanksTypes = loreOld.get(2).split(" ")[2] + "/";
                 }
-                tanksTypes += player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1];
-                int addOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(1).split(" ")[1]);
+                tanksTypes += player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[1];
 
+                int addOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0]);
+                int addMaxOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[1]);
                 player.getInventory().setItemInMainHand(null);
                 List<String> lore = new ArrayList<>();
-
                 int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) + 1;
                 int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) + addOxygen;
-                int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]) + addOxygen;
-
-                if (loreOld.get(2).split(" ").length > 2) {
-                    tanksTypes = loreOld.get(2).split(" ")[2] + "1";
-                }
+                int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]) + addMaxOxygen;
 
                 String oxygenBar = "";
                 int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
