@@ -1,12 +1,11 @@
 package vasys.mehaniksspacecore;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -62,9 +61,10 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                     player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank("0", loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]));
                                 }
                                 tanksTypes = "";
-                                for (int i = 0; i < loreOld.get(2).split(" ")[2].split("/").length - 1; i++) {
-                                    tanksTypes += loreOld.get(2).split(" ")[2].split("/")[i];
-                                    if (i < loreOld.get(2).split(" ")[2].split("/").length - 2) {
+                                String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
+                                for (int i = 0; i < tanksList.length - 1; i++) {
+                                    tanksTypes += tanksList[i];
+                                    if (i < tanksList.length - 2) {
                                         tanksTypes += "/";
                                     }
                                 }
@@ -94,6 +94,17 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 }
             }
         }, 100, 100);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (World world : getServer().getWorlds()) {
+                for (Entity entity : world.getEntities()) {
+                    if (entity.getType() == EntityType.GLOW_ITEM_FRAME && entity.getName().equals(ChatColor.GRAY + "Oxygen Generator")) {
+                        entity.setRotation(0, 15);
+                        world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 1f, 1f);
+                    }
+                }
+            };
+        }, 200, 200);
     }
 
     @Override
@@ -122,14 +133,15 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             }
             if (args[0].equals("getitems")) {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate("1"));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(1));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank("60", "60"));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator());
                 return true;
             }
             if (args[0].equals("chestplate")) {
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(args[1]));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
             }
             if (args[0].equals("tank")) {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(args[1], args[2]));

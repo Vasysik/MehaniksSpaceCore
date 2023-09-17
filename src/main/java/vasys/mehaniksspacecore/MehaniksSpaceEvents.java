@@ -3,14 +3,13 @@ package vasys.mehaniksspacecore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -40,6 +39,7 @@ public class MehaniksSpaceEvents implements Listener {
 
         if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getFrom().getName())) {
             Player player = event.getPlayer();
+            player.lockFreezeTicks(false);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW_FALLING);
             player.removePotionEffect(PotionEffectType.WITHER);
@@ -111,6 +111,7 @@ public class MehaniksSpaceEvents implements Listener {
         Player player = event.getPlayer();
         if(player.getInventory().getItemInMainHand().getType() == Material.CARROT_ON_A_STICK &&
                 player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
+                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
                 player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
                 player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
             ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
@@ -143,6 +144,68 @@ public class MehaniksSpaceEvents implements Listener {
                 spaceSuitChestplateMeta.setLore(lore);
                 player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerSneak(PlayerToggleSneakEvent event) {
+        Player player = event.getPlayer();
+        if(player.getInventory().getItemInMainHand().getType() == Material.IRON_CHESTPLATE &&
+                player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
+                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001) {
+
+            ItemMeta spaceSuitChestplateMeta = player.getInventory().getItemInMainHand().getItemMeta();
+            List<String> loreOld = spaceSuitChestplateMeta.getLore();
+
+            if (0 < Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2))) {
+                List<String> lore = new ArrayList<>();
+                String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
+                int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]);
+
+                for (int i = 0; i <= tanksList.length - 1; i++) {
+                    String maxOxygen;
+                    if ( Integer.parseInt(tanksList[i]) <= oxygen) {
+                        maxOxygen = tanksList[i];
+                    } else {
+                        maxOxygen = String.valueOf(oxygen);
+                    }
+
+                    if (player.getInventory().firstEmpty() != -1) {
+                        player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(maxOxygen, tanksList[i]));
+                    } else {
+                        player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(maxOxygen, tanksList[i]));
+                    }
+                }
+
+                lore.add(ChatColor.WHITE + "" + 0 + "/" + loreOld.get(0).split(" ")[0].split("/")[1] + " oxygen tanks");
+                lore.add(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "■".repeat(10) + ChatColor.WHITE + "] 0/0");
+                lore.add(ChatColor.DARK_GRAY + "Tanks types: ");
+                spaceSuitChestplateMeta.setLore(lore);
+                player.getInventory().getItemInMainHand().setItemMeta(spaceSuitChestplateMeta);
+            }
+        } else if(player.getInventory().getItemInMainHand().getType() == Material.CARROT_ON_A_STICK &&
+                player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
+                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001) {
+
+            ItemMeta oxygenTankMeta = player.getInventory().getItemInMainHand().getItemMeta();
+            List<String> loreOld = oxygenTankMeta.getLore();
+            List<String> lore = new ArrayList<>();
+
+            lore.add(ChatColor.WHITE + "volume: " + 0 + "/" + loreOld.get(0).split(" ")[1].split("/")[1]);
+            oxygenTankMeta.setLore(lore);
+            player.getInventory().getItemInMainHand().setItemMeta(oxygenTankMeta);
+        }
+
+    }
+
+    @EventHandler
+    public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
+        if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
+                event.getPlayer().getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
+                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Oxygen Generator") &&
+                event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+            event.getRightClicked().setCustomNameVisible(true);
+            event.getRightClicked().setCustomName(ChatColor.GRAY + "Oxygen Generator");
         }
     }
 
