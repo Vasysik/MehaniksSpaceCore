@@ -24,9 +24,9 @@ import static org.bukkit.Bukkit.*;
 public class MehaniksSpaceItems {
 
     public static void addRecipes() {
-        ShapedRecipe ironOxygenHelmet = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet"), getIronSpaceSuitHelmet());
+        ShapedRecipe ironOxygenHelmet = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet"), getIronSpaceSuitHelmet(0));
         ironOxygenHelmet.shape("*%*","%A%","mTm");
-        ironOxygenHelmet.setIngredient('*', Material.NETHERITE_INGOT);
+        ironOxygenHelmet.setIngredient('*', Material.COPPER_INGOT);
         ironOxygenHelmet.setIngredient('%', Material.IRON_BLOCK);
         ironOxygenHelmet.setIngredient('A', Material.IRON_HELMET);
         ironOxygenHelmet.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
@@ -35,7 +35,7 @@ public class MehaniksSpaceItems {
 
         ShapedRecipe ironSpaceSuitChestplate = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_chestplate"), getIronSpaceSuitChestplate(1));
         ironSpaceSuitChestplate.shape("m%m","*A*","%m%");
-        ironSpaceSuitChestplate.setIngredient('*', Material.NETHERITE_INGOT);
+        ironSpaceSuitChestplate.setIngredient('*', Material.COPPER_INGOT);
         ironSpaceSuitChestplate.setIngredient('%', Material.IRON_BLOCK);
         ironSpaceSuitChestplate.setIngredient('A', Material.IRON_CHESTPLATE);
         ironSpaceSuitChestplate.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
@@ -43,7 +43,7 @@ public class MehaniksSpaceItems {
 
         ShapedRecipe ironSpaceSuitLeggins = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_leggings"), getIronSpaceSuitLeggins());
         ironSpaceSuitLeggins.shape("m%m","*A*","m%m");
-        ironSpaceSuitLeggins.setIngredient('*', Material.NETHERITE_INGOT);
+        ironSpaceSuitLeggins.setIngredient('*', Material.COPPER_INGOT);
         ironSpaceSuitLeggins.setIngredient('%', Material.IRON_BLOCK);
         ironSpaceSuitLeggins.setIngredient('A', Material.IRON_LEGGINGS);
         ironSpaceSuitLeggins.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
@@ -51,19 +51,19 @@ public class MehaniksSpaceItems {
 
         ShapedRecipe ironSpaceSuitBoots = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_boots"), getIronSpaceSuitBoots());
         ironSpaceSuitBoots.shape("m%m","*A*","i%i");
-        ironSpaceSuitBoots.setIngredient('*', Material.NETHERITE_INGOT);
+        ironSpaceSuitBoots.setIngredient('*', Material.COPPER_INGOT);
         ironSpaceSuitBoots.setIngredient('%', Material.IRON_BLOCK);
         ironSpaceSuitBoots.setIngredient('A', Material.IRON_BOOTS);
         ironSpaceSuitBoots.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
         ironSpaceSuitBoots.setIngredient( 'i', Material.IRON_INGOT);
         getServer().addRecipe(ironSpaceSuitBoots);
 
-        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank("60", "60"));
+        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(30, 30));
         ironOxygenTank.shape("i%i","%m%","*-*");
         ironOxygenTank.setIngredient( 'i', Material.IRON_INGOT);
         ironOxygenTank.setIngredient( '%', Material.TINTED_GLASS);
         ironOxygenTank.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
-        ironOxygenTank.setIngredient( '*', Material.NETHERITE_INGOT);
+        ironOxygenTank.setIngredient( '*', Material.COPPER_INGOT);
         ironOxygenTank.setIngredient( '-', Material.IRON_TRAPDOOR);
         getServer().addRecipe(ironOxygenTank);
 
@@ -107,16 +107,28 @@ public class MehaniksSpaceItems {
 
     }
 
-    public static ItemStack getIronSpaceSuitHelmet() {
+    public static ItemStack getIronSpaceSuitHelmet(Integer autoOxigenSpeed) {
         ItemStack spaceSuitHelmet = new ItemStack(Material.IRON_HELMET);
         ArmorMeta spaceSuitHelmetMeta = (ArmorMeta) spaceSuitHelmet.getItemMeta();
-        spaceSuitHelmetMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
+
+        if (autoOxigenSpeed < 1) {
+            spaceSuitHelmetMeta.setTrim(new ArmorTrim(TrimMaterial.QUARTZ, TrimPattern.SILENCE));
+        } else if (autoOxigenSpeed < 2) {
+            spaceSuitHelmetMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
+        } else {
+            spaceSuitHelmetMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.SILENCE));
+        }
+
         spaceSuitHelmetMeta.setCustomModelData(1001);
         spaceSuitHelmetMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         spaceSuitHelmetMeta.setDisplayName(ChatColor.GRAY + "Space Suit Helmet");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.DARK_GRAY + "auto oxigen refill: " + autoOxigenSpeed);
+        spaceSuitHelmetMeta.setLore(lore);
         spaceSuitHelmet.setItemMeta(spaceSuitHelmetMeta);
         return spaceSuitHelmet;
     }
+
 
     public static ItemStack getIronSpaceSuitChestplate(Integer max) {
         ItemStack spaceSuitChestplate = new ItemStack(Material.IRON_CHESTPLATE);
@@ -164,7 +176,7 @@ public class MehaniksSpaceItems {
         return spaceSuitBoots;
     }
 
-    public static ItemStack getIronOxygenTank(String i, String max) {
+    public static ItemStack getIronOxygenTank(Integer i, Integer max) {
         ItemStack oxygenTank = new ItemStack(Material.CARROT_ON_A_STICK);
         ItemMeta oxygenTankMeta = oxygenTank.getItemMeta();
         oxygenTankMeta.setCustomModelData(1001);

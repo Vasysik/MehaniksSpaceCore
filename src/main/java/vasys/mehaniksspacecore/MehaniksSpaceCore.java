@@ -4,9 +4,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -37,8 +35,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (String s : MehaniksSpaceWorldList) {
-                for (int j = 0; j < getServer().getWorld(s).getPlayers().size(); j++) {
-                    Player player = getServer().getWorld(s).getPlayers().get(j);
+                for (Player player : getServer().getWorld(s).getPlayers()) {
                     if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
                             player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
                         ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
@@ -56,9 +53,9 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
 
                                 if (player.getInventory().firstEmpty() != -1) {
-                                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank("0", loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]));
+                                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
                                 } else {
-                                    player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank("0", loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]));
+                                    player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
                                 }
                                 tanksTypes = "";
                                 String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
@@ -96,15 +93,75 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         }, 100, 100);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (World w : getServer().getWorlds()) {
+                if (!MehaniksSpaceWorldList.contains(w.getName())) {
+                    for (Player player : w.getPlayers()) {
+                        if (player.getInventory().getHelmet() != null && player.getInventory().getChestplate() != null &&
+                                player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
+                                player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001 &&
+                                Integer.parseInt(player.getInventory().getChestplate().getItemMeta().getLore().get(1).split(" ")[1].split("/")[0]) <
+                                        Integer.parseInt(player.getInventory().getChestplate().getItemMeta().getLore().get(1).split(" ")[1].split("/")[1]) &&
+                                player.getInventory().getHelmet().getItemMeta().hasCustomModelData() &&
+                                player.getInventory().getHelmet().getItemMeta().getCustomModelData() == 1001 &&
+                                player.getInventory().getHelmet().getItemMeta().getLore().get(0).split(" ")[3] != "0") {
+                            Integer autoOxigenSpeed = Integer.parseInt(player.getInventory().getHelmet().getItemMeta().getLore().get(0).split(" ")[3]);
+
+                            ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
+                            List<String> loreOld = spaceSuitChestplateMeta.getLore();
+                            List<String> lore = new ArrayList<>();
+                            int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]);
+                            int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
+                            if (maxOxygen - oxygen >= autoOxigenSpeed) oxygen += autoOxigenSpeed;
+                            else oxygen = maxOxygen;
+                            int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
+                            String tanksTypes = loreOld.get(2).split(" ")[2];
+
+                            String oxygenBar = "";
+                            int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
+                            oxygenBar += ChatColor.BLUE + "■".repeat(oxPercent);
+                            int noOxPercent = 12 - oxygenBar.length();
+                            oxygenBar += ChatColor.DARK_GRAY + "■".repeat(noOxPercent);
+
+                            lore.add(ChatColor.WHITE + "" + tanks + "/" + loreOld.get(0).split(" ")[0].split("/")[1] + " oxygen tanks");
+                            lore.add(ChatColor.WHITE + "[" + ChatColor.BLUE + "" + oxygenBar + "" + ChatColor.WHITE + "] " + oxygen + "/" + maxOxygen);
+                            lore.add(ChatColor.DARK_GRAY + "Tanks types: " + tanksTypes);
+                            spaceSuitChestplateMeta.setLore(lore);
+                            player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+                        }
+                    }
+                }
+            }
+        }, 100, 100);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (World world : getServer().getWorlds()) {
                 for (Entity entity : world.getEntities()) {
-                    if (entity.getType() == EntityType.GLOW_ITEM_FRAME && entity.getName().equals(ChatColor.GRAY + "Oxygen Generator")) {
-                        entity.setRotation(0, 15);
-                        world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 1f, 1f);
+                    if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
+                        ItemFrame itemFrame = (ItemFrame) entity;
+                        if (itemFrame.getName().equals("Oxygen Generator") &&
+                                itemFrame.getItem().getType() == Material.FIREWORK_STAR
+                                ) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+
+
+                            if (itemFrame.getRotation() == Rotation.NONE) itemFrame.setRotation(Rotation.CLOCKWISE_45);
+                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE_45) itemFrame.setRotation(Rotation.CLOCKWISE);
+                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE) itemFrame.setRotation(Rotation.CLOCKWISE_135);
+                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE_135) itemFrame.setRotation(Rotation.FLIPPED);
+                            else if (itemFrame.getRotation() == Rotation.FLIPPED) itemFrame.setRotation(Rotation.FLIPPED_45);
+                            else if (itemFrame.getRotation() == Rotation.FLIPPED_45) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE);
+                            else if (itemFrame.getRotation() == Rotation.COUNTER_CLOCKWISE) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+                            else itemFrame.setRotation(Rotation.NONE);
+
+                            world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
+                        } else if (!itemFrame.isVisible() && itemFrame.getName().equals("Oxygen Generator")) {
+                            itemFrame.setCustomName("");
+                            itemFrame.setVisible(true);
+                        }
                     }
                 }
             };
-        }, 200, 200);
+        }, 100, 100);
     }
 
     @Override
@@ -132,11 +189,11 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 return true;
             }
             if (args[0].equals("getitems")) {
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(1));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank("60", "60"));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator());
                 return true;
             }
@@ -144,7 +201,10 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
             }
             if (args[0].equals("tank")) {
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(args[1], args[2]));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
+            }
+            if (args[0].equals("helmet")) {
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(Integer.parseInt(args[1])));
             }
             sender.sendMessage(ChatColor.RED + "ms !null");
             return false;

@@ -5,9 +5,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.meta.ArmorMeta;
@@ -171,9 +173,9 @@ public class MehaniksSpaceEvents implements Listener {
                     }
 
                     if (player.getInventory().firstEmpty() != -1) {
-                        player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(maxOxygen, tanksList[i]));
+                        player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(maxOxygen), Integer.parseInt(tanksList[i])));
                     } else {
-                        player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(maxOxygen, tanksList[i]));
+                        player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(maxOxygen), Integer.parseInt(tanksList[i])));
                     }
                 }
 
@@ -199,13 +201,33 @@ public class MehaniksSpaceEvents implements Listener {
     }
 
     @EventHandler
+    public void FrameEntity(EntityDamageByEntityEvent event) {
+        if (event.getEntity().getType() == EntityType.GLOW_ITEM_FRAME) {
+            ItemFrame itemFrame = (ItemFrame) event.getEntity();
+            if (itemFrame.getItem().getType() == Material.FIREWORK_STAR &&
+                    itemFrame.getItem().getItemMeta().hasCustomModelData() &&
+                    itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
+                if (itemFrame.getItem().getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Oxygen Generator")) {
+                    itemFrame.setCustomName("");
+                    itemFrame.setVisible(true);
+                } else {
+                    itemFrame.remove();
+                    itemFrame.getWorld().createExplosion(itemFrame, 2);
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
         if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
                 event.getPlayer().getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
+                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
                 event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Oxygen Generator") &&
                 event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+
             event.getRightClicked().setCustomNameVisible(true);
-            event.getRightClicked().setCustomName(ChatColor.GRAY + "Oxygen Generator");
+            event.getRightClicked().setCustomName("Oxygen Generator");
         }
     }
 
