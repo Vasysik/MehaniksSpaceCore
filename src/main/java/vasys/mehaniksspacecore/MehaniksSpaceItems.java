@@ -105,6 +105,14 @@ public class MehaniksSpaceItems {
         ironSpaceSuitChestplate5.setIngredient('@', getIronSpaceSuitChestplate(6));
         getServer().addRecipe(ironSpaceSuitChestplate5);
 
+        ShapedRecipe ironOxygenGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_generator"), getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+        ironOxygenGenerator.shape("b%b","%B%","imi");
+        ironOxygenGenerator.setIngredient('b', Material.BLAZE_POWDER);
+        ironOxygenGenerator.setIngredient('%', Material.TINTED_GLASS);
+        ironOxygenGenerator.setIngredient('B', Material.BUCKET);
+        ironOxygenGenerator.setIngredient('i', Material.LIGHTNING_ROD);
+        ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
+        getServer().addRecipe(ironOxygenGenerator);
     }
 
     public static ItemStack getIronSpaceSuitHelmet(Integer autoOxigenSpeed) {
@@ -188,7 +196,7 @@ public class MehaniksSpaceItems {
         return oxygenTank;
     }
 
-    public static ItemStack getIronOxygenGenerator() {
+    public static ItemStack getIronOxygenGenerator(ChatColor color, Integer oxygen, Integer copper) {
 //        ItemStack oxygenGenerator = new ItemStack(Material.PLAYER_HEAD);
 //        SkullMeta oxygenGeneratorMeta = (SkullMeta) oxygenGenerator.getItemMeta();
 //
@@ -206,7 +214,7 @@ public class MehaniksSpaceItems {
         ItemStack oxygenGenerator = new ItemStack(Material.FIREWORK_STAR);
         ItemMeta oxygenGeneratorMeta = oxygenGenerator.getItemMeta();
         oxygenGeneratorMeta.setCustomModelData(1001);
-        oxygenGeneratorMeta.setDisplayName(ChatColor.GRAY + " Oxygen Generator 0");
+        oxygenGeneratorMeta.setDisplayName(color + "Oxygen Generator " + oxygen + " " + copper);
         oxygenGenerator.setItemMeta(oxygenGeneratorMeta);
         return oxygenGenerator;
     }

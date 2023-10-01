@@ -207,7 +207,8 @@ public class MehaniksSpaceEvents implements Listener {
             if (itemFrame.getItem().getType() == Material.FIREWORK_STAR &&
                     itemFrame.getItem().getItemMeta().hasCustomModelData() &&
                     itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
-                if (itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[0].equals(ChatColor.GRAY)) {
+                if (Integer.parseInt(itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[2]) <= 0 &&
+                        Integer.parseInt(itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[3]) <= 0) {
                     itemFrame.setCustomName("");
                     itemFrame.setVisible(true);
                 } else {

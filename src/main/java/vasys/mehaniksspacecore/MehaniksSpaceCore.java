@@ -2,6 +2,7 @@ package vasys.mehaniksspacecore;
 
 import org.bukkit.*;
 import org.bukkit.block.Barrel;
+import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -142,37 +143,43 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 itemFrame.getItem().getType() == Material.FIREWORK_STAR) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
-                            Barrel barrel = (Barrel) itemFrame.getWorld().getBlockAt((int)itemFrame.getX(), (int)itemFrame.getY() - 1, (int)itemFrame.getZ());
+                            Container barrel = (Container) itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
 
-                            if (barrel.getInventory().contains(Material.WATER_BUCKET)) {
+                            if (barrel.getInventory().contains(Material.WATER_BUCKET) || barrel.getInventory().contains(Material.COPPER_INGOT)) {
                                 String name = itemFrame.getItem().getItemMeta().getDisplayName();
-                                int oxygen = Integer.parseInt(name.split(" ")[3]);
+                                int oxygen = Integer.parseInt(name.split(" ")[2]);
+                                int copper = Integer.parseInt(name.split(" ")[3]);
                                 for (ItemStack i : barrel.getInventory().getContents()) {
-                                    if (i.getType() == Material.WATER_BUCKET) {
+                                    if (i != null && i.getType() == Material.WATER_BUCKET) {
                                         oxygen += 600;
+                                        i.setType(Material.BUCKET);
                                     }
-                                    itemFrame.getItem().getItemMeta().setDisplayName(ChatColor.BLUE + " Oxygen Generator " + oxygen);
+                                    if (i != null && i.getType() == Material.COPPER_INGOT) {
+                                        copper += 30 * i.getAmount();
+                                        i.setType(Material.GRAY_DYE);
+                                    }
                                 }
-                            } else if (itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[3].equals("0") &&
-                                    itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[0].equals(ChatColor.BLUE)) {
-                                itemFrame.getItem().getItemMeta().setDisplayName(ChatColor.GRAY + " Oxygen Generator 0");
+                                itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
                             } else if (barrel.getInventory().contains(Material.CARROT_ON_A_STICK)) {
                                 for (ItemStack i : barrel.getInventory().getContents()) {
-                                    if (i.getType() == Material.CARROT_ON_A_STICK &&
+                                    if (i != null && i.getType() == Material.CARROT_ON_A_STICK &&
                                             i.getItemMeta().hasCustomModelData() &&
                                             i.getItemMeta().getCustomModelData() == 1001) {
-                                        List<String> loreOld = i.getItemMeta().getLore();
+                                        ItemMeta itemMeta = i.getItemMeta();
+                                        String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                                        List<String> loreOld = itemMeta.getLore();
                                         List<String> lore = new ArrayList<>();
-                                        int min = Integer.parseInt(loreOld.get(1).split("/")[0]);
-                                        int max = Integer.parseInt(loreOld.get(1).split("/")[1]);
+                                        int min = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[0]);
+                                        int max = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[1]);
+                                        int oxygen = Integer.parseInt(name.split(" ")[2]) - 1;
+                                        int copper = Integer.parseInt(name.split(" ")[3]) - 5;
 
-                                        if (min < max) {
+                                        if (min < max && oxygen >= 0 && copper >= 0) {
                                             min += 1;
                                             lore.add(ChatColor.WHITE + "volume: " + min + "/" + max);
-                                            i.getItemMeta().setLore(lore);
-                                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
-                                            int oxygen = Integer.parseInt(name.split(" ")[3]) - 1;
-                                            itemFrame.getItem().getItemMeta().setDisplayName(ChatColor.BLUE + " Oxygen Generator " + oxygen);
+                                            itemMeta.setLore(lore);
+                                            i.setItemMeta(itemMeta);
+                                            itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
 
                                             if (itemFrame.getRotation() == Rotation.NONE) itemFrame.setRotation(Rotation.CLOCKWISE_45);
                                             else if (itemFrame.getRotation() == Rotation.CLOCKWISE_45) itemFrame.setRotation(Rotation.CLOCKWISE);
@@ -184,6 +191,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                             else itemFrame.setRotation(Rotation.NONE);
 
                                             world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
+
+                                            if (oxygen == 0 || copper == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, oxygen, copper));
                                         }
                                     }
                                 }
@@ -228,7 +237,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
                 return true;
             }
             if (args[0].equals("chestplate")) {
