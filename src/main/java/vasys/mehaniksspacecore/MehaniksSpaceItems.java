@@ -206,7 +206,7 @@ public class MehaniksSpaceItems {
         ItemStack oxygenGenerator = new ItemStack(Material.FIREWORK_STAR);
         ItemMeta oxygenGeneratorMeta = oxygenGenerator.getItemMeta();
         oxygenGeneratorMeta.setCustomModelData(1001);
-        oxygenGeneratorMeta.setDisplayName(ChatColor.GRAY + "Oxygen Generator");
+        oxygenGeneratorMeta.setDisplayName(ChatColor.GRAY + " Oxygen Generator 0");
         oxygenGenerator.setItemMeta(oxygenGeneratorMeta);
         return oxygenGenerator;
     }

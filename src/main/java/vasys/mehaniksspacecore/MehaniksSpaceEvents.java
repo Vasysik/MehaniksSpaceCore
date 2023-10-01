@@ -207,7 +207,7 @@ public class MehaniksSpaceEvents implements Listener {
             if (itemFrame.getItem().getType() == Material.FIREWORK_STAR &&
                     itemFrame.getItem().getItemMeta().hasCustomModelData() &&
                     itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
-                if (itemFrame.getItem().getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Oxygen Generator")) {
+                if (itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[0].equals(ChatColor.GRAY)) {
                     itemFrame.setCustomName("");
                     itemFrame.setVisible(true);
                 } else {
@@ -223,7 +223,7 @@ public class MehaniksSpaceEvents implements Listener {
         if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
                 event.getPlayer().getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
                 event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals(ChatColor.GRAY + "Oxygen Generator") &&
+                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
                 event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
 
             event.getRightClicked().setCustomNameVisible(true);

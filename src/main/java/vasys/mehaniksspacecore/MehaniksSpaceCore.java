@@ -1,18 +1,18 @@
 package vasys.mehaniksspacecore;
 
 import org.bukkit.*;
+import org.bukkit.block.Barrel;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 public final class MehaniksSpaceCore extends JavaPlugin {
@@ -139,21 +139,55 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                     if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
                         ItemFrame itemFrame = (ItemFrame) entity;
                         if (itemFrame.getName().equals("Oxygen Generator") &&
-                                itemFrame.getItem().getType() == Material.FIREWORK_STAR
-                                ) {
+                                itemFrame.getItem().getType() == Material.FIREWORK_STAR) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
+                            Barrel barrel = (Barrel) itemFrame.getWorld().getBlockAt((int)itemFrame.getX(), (int)itemFrame.getY() - 1, (int)itemFrame.getZ());
 
-                            if (itemFrame.getRotation() == Rotation.NONE) itemFrame.setRotation(Rotation.CLOCKWISE_45);
-                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE_45) itemFrame.setRotation(Rotation.CLOCKWISE);
-                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE) itemFrame.setRotation(Rotation.CLOCKWISE_135);
-                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE_135) itemFrame.setRotation(Rotation.FLIPPED);
-                            else if (itemFrame.getRotation() == Rotation.FLIPPED) itemFrame.setRotation(Rotation.FLIPPED_45);
-                            else if (itemFrame.getRotation() == Rotation.FLIPPED_45) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE);
-                            else if (itemFrame.getRotation() == Rotation.COUNTER_CLOCKWISE) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
-                            else itemFrame.setRotation(Rotation.NONE);
+                            if (barrel.getInventory().contains(Material.WATER_BUCKET)) {
+                                String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                                int oxygen = Integer.parseInt(name.split(" ")[3]);
+                                for (ItemStack i : barrel.getInventory().getContents()) {
+                                    if (i.getType() == Material.WATER_BUCKET) {
+                                        oxygen += 600;
+                                    }
+                                    itemFrame.getItem().getItemMeta().setDisplayName(ChatColor.BLUE + " Oxygen Generator " + oxygen);
+                                }
+                            } else if (itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[3].equals("0") &&
+                                    itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[0].equals(ChatColor.BLUE)) {
+                                itemFrame.getItem().getItemMeta().setDisplayName(ChatColor.GRAY + " Oxygen Generator 0");
+                            } else if (barrel.getInventory().contains(Material.CARROT_ON_A_STICK)) {
+                                for (ItemStack i : barrel.getInventory().getContents()) {
+                                    if (i.getType() == Material.CARROT_ON_A_STICK &&
+                                            i.getItemMeta().hasCustomModelData() &&
+                                            i.getItemMeta().getCustomModelData() == 1001) {
+                                        List<String> loreOld = i.getItemMeta().getLore();
+                                        List<String> lore = new ArrayList<>();
+                                        int min = Integer.parseInt(loreOld.get(1).split("/")[0]);
+                                        int max = Integer.parseInt(loreOld.get(1).split("/")[1]);
 
-                            world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
+                                        if (min < max) {
+                                            min += 1;
+                                            lore.add(ChatColor.WHITE + "volume: " + min + "/" + max);
+                                            i.getItemMeta().setLore(lore);
+                                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                                            int oxygen = Integer.parseInt(name.split(" ")[3]) - 1;
+                                            itemFrame.getItem().getItemMeta().setDisplayName(ChatColor.BLUE + " Oxygen Generator " + oxygen);
+
+                                            if (itemFrame.getRotation() == Rotation.NONE) itemFrame.setRotation(Rotation.CLOCKWISE_45);
+                                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE_45) itemFrame.setRotation(Rotation.CLOCKWISE);
+                                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE) itemFrame.setRotation(Rotation.CLOCKWISE_135);
+                                            else if (itemFrame.getRotation() == Rotation.CLOCKWISE_135) itemFrame.setRotation(Rotation.FLIPPED);
+                                            else if (itemFrame.getRotation() == Rotation.FLIPPED) itemFrame.setRotation(Rotation.FLIPPED_45);
+                                            else if (itemFrame.getRotation() == Rotation.FLIPPED_45) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE);
+                                            else if (itemFrame.getRotation() == Rotation.COUNTER_CLOCKWISE) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+                                            else itemFrame.setRotation(Rotation.NONE);
+
+                                            world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
+                                        }
+                                    }
+                                }
+                            }
                         } else if (!itemFrame.isVisible() && itemFrame.getName().equals("Oxygen Generator")) {
                             itemFrame.setCustomName("");
                             itemFrame.setVisible(true);
