@@ -3,6 +3,7 @@ package vasys.mehaniksspacecore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -145,6 +146,7 @@ public class MehaniksSpaceEvents implements Listener {
                 lore.add(ChatColor.DARK_GRAY + "Tanks types: " + tanksTypes);
                 spaceSuitChestplateMeta.setLore(lore);
                 player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+                player.playSound(player, Sound.BLOCK_IRON_DOOR_CLOSE, 0.5f, 1f);
             }
         }
     }
@@ -163,6 +165,7 @@ public class MehaniksSpaceEvents implements Listener {
                 List<String> lore = new ArrayList<>();
                 String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
                 int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]);
+                player.playSound(player, Sound.BLOCK_IRON_DOOR_OPEN, 0.5f, 1f);
 
                 for (int i = 0; i <= tanksList.length - 1; i++) {
                     String maxOxygen;
@@ -187,12 +190,13 @@ public class MehaniksSpaceEvents implements Listener {
             }
         } else if(player.getInventory().getItemInMainHand().getType() == Material.CARROT_ON_A_STICK &&
                 player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001) {
+                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                !player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0].equals("0")) {
 
             ItemMeta oxygenTankMeta = player.getInventory().getItemInMainHand().getItemMeta();
             List<String> loreOld = oxygenTankMeta.getLore();
             List<String> lore = new ArrayList<>();
-
+            player.playSound(player, Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
             lore.add(ChatColor.WHITE + "volume: " + 0 + "/" + loreOld.get(0).split(" ")[1].split("/")[1]);
             oxygenTankMeta.setLore(lore);
             player.getInventory().getItemInMainHand().setItemMeta(oxygenTankMeta);
@@ -226,7 +230,7 @@ public class MehaniksSpaceEvents implements Listener {
                 event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
                 event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
                 event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
-
+            event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
             event.getRightClicked().setCustomNameVisible(true);
             event.getRightClicked().setCustomName("Oxygen Generator");
         }
