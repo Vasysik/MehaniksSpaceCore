@@ -24,14 +24,54 @@ import static org.bukkit.Bukkit.*;
 public class MehaniksSpaceItems {
 
     public static void addRecipes() {
-        ShapedRecipe ironOxygenHelmet = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet"), getIronSpaceSuitHelmet(0));
-        ironOxygenHelmet.shape("*%*","%A%","mTm");
-        ironOxygenHelmet.setIngredient('*', Material.COPPER_INGOT);
-        ironOxygenHelmet.setIngredient('%', Material.IRON_BLOCK);
-        ironOxygenHelmet.setIngredient('A', Material.IRON_HELMET);
-        ironOxygenHelmet.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
-        ironOxygenHelmet.setIngredient('T', Material.TINTED_GLASS);
-        getServer().addRecipe(ironOxygenHelmet);
+        ShapedRecipe ironSpaceSuitHelmet = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet"), getIronSpaceSuitHelmet(0));
+        ironSpaceSuitHelmet.shape("*%*","%A%","mTm");
+        ironSpaceSuitHelmet.setIngredient('*', Material.COPPER_INGOT);
+        ironSpaceSuitHelmet.setIngredient('%', Material.IRON_BLOCK);
+        ironSpaceSuitHelmet.setIngredient('A', Material.IRON_HELMET);
+        ironSpaceSuitHelmet.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironSpaceSuitHelmet.setIngredient('T', Material.TINTED_GLASS);
+        getServer().addRecipe(ironSpaceSuitHelmet);
+
+        ShapedRecipe ironSpaceSuitHelmet2 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet_2"), getIronSpaceSuitHelmet(2));
+        ironSpaceSuitHelmet2.shape("ini","mTm","c@c");
+        ironSpaceSuitHelmet2.setIngredient('n', Material.NETHERITE_INGOT);
+        ironSpaceSuitHelmet2.setIngredient('i', Material.IRON_INGOT);
+        ironSpaceSuitHelmet2.setIngredient('T', Material.TINTED_GLASS);
+        ironSpaceSuitHelmet2.setIngredient( 'c', Material.COPPER_INGOT);
+        ironSpaceSuitHelmet2.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironSpaceSuitHelmet2.setIngredient('@', getIronSpaceSuitHelmet(0));
+        getServer().addRecipe(ironSpaceSuitHelmet2);
+
+        ShapedRecipe ironSpaceSuitHelmet3 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet_3"), getIronSpaceSuitHelmet(4));
+        ironSpaceSuitHelmet3.shape("nin","mTm","c@c");
+        ironSpaceSuitHelmet3.setIngredient('n', Material.NETHERITE_INGOT);
+        ironSpaceSuitHelmet3.setIngredient('i', Material.IRON_INGOT);
+        ironSpaceSuitHelmet3.setIngredient('T', Material.TINTED_GLASS);
+        ironSpaceSuitHelmet3.setIngredient( 'c', Material.COPPER_INGOT);
+        ironSpaceSuitHelmet3.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironSpaceSuitHelmet3.setIngredient('@', getIronSpaceSuitHelmet(2));
+        getServer().addRecipe(ironSpaceSuitHelmet3);
+
+        ShapedRecipe ironSpaceSuitHelmet4 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet_4"), getIronSpaceSuitHelmet(6));
+        ironSpaceSuitHelmet4.shape("mnm","nTn","c@c");
+        ironSpaceSuitHelmet4.setIngredient('n', Material.NETHERITE_INGOT);
+        ironSpaceSuitHelmet4.setIngredient('T', Material.TINTED_GLASS);
+        ironSpaceSuitHelmet4.setIngredient( 'c', Material.COPPER_INGOT);
+        ironSpaceSuitHelmet4.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironSpaceSuitHelmet4.setIngredient('@', getIronSpaceSuitHelmet(4));
+        getServer().addRecipe(ironSpaceSuitHelmet4);
+
+        ShapedRecipe ironSpaceSuitHelmet5 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet_5"), getIronSpaceSuitHelmet(8));
+        ironSpaceSuitHelmet5.shape("mnm","nTn","c@c");
+        ironSpaceSuitHelmet5.setIngredient('n', Material.NETHERITE_INGOT);
+        ironSpaceSuitHelmet5.setIngredient('T', Material.TINTED_GLASS);
+        ironSpaceSuitHelmet5.setIngredient( 'c', Material.NETHERITE_SCRAP);
+        ironSpaceSuitHelmet5.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironSpaceSuitHelmet5.setIngredient('@', getIronSpaceSuitHelmet(6));
+        getServer().addRecipe(ironSpaceSuitHelmet5);
+
+
 
         ShapedRecipe ironSpaceSuitChestplate = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_chestplate"), getIronSpaceSuitChestplate(1));
         ironSpaceSuitChestplate.shape("m%m","*A*","%m%");
@@ -40,32 +80,6 @@ public class MehaniksSpaceItems {
         ironSpaceSuitChestplate.setIngredient('A', Material.IRON_CHESTPLATE);
         ironSpaceSuitChestplate.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
         getServer().addRecipe(ironSpaceSuitChestplate);
-
-        ShapedRecipe ironSpaceSuitLeggins = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_leggings"), getIronSpaceSuitLeggins());
-        ironSpaceSuitLeggins.shape("m%m","*A*","m%m");
-        ironSpaceSuitLeggins.setIngredient('*', Material.COPPER_INGOT);
-        ironSpaceSuitLeggins.setIngredient('%', Material.IRON_BLOCK);
-        ironSpaceSuitLeggins.setIngredient('A', Material.IRON_LEGGINGS);
-        ironSpaceSuitLeggins.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
-        getServer().addRecipe(ironSpaceSuitLeggins);
-
-        ShapedRecipe ironSpaceSuitBoots = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_boots"), getIronSpaceSuitBoots());
-        ironSpaceSuitBoots.shape("m%m","*A*","i%i");
-        ironSpaceSuitBoots.setIngredient('*', Material.COPPER_INGOT);
-        ironSpaceSuitBoots.setIngredient('%', Material.IRON_BLOCK);
-        ironSpaceSuitBoots.setIngredient('A', Material.IRON_BOOTS);
-        ironSpaceSuitBoots.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
-        ironSpaceSuitBoots.setIngredient( 'i', Material.IRON_INGOT);
-        getServer().addRecipe(ironSpaceSuitBoots);
-
-        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(30, 30));
-        ironOxygenTank.shape("i%i","%m%","*-*");
-        ironOxygenTank.setIngredient( 'i', Material.IRON_INGOT);
-        ironOxygenTank.setIngredient( '%', Material.TINTED_GLASS);
-        ironOxygenTank.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
-        ironOxygenTank.setIngredient( '*', Material.COPPER_INGOT);
-        ironOxygenTank.setIngredient( '-', Material.IRON_TRAPDOOR);
-        getServer().addRecipe(ironOxygenTank);
 
         ShapedRecipe ironSpaceSuitChestplate2 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_chestplate_2"), getIronSpaceSuitChestplate(2));
         ironSpaceSuitChestplate2.shape("ini","T%T","c@c");
@@ -104,6 +118,34 @@ public class MehaniksSpaceItems {
         ironSpaceSuitChestplate5.setIngredient( '%', Material.BARREL);
         ironSpaceSuitChestplate5.setIngredient('@', getIronSpaceSuitChestplate(6));
         getServer().addRecipe(ironSpaceSuitChestplate5);
+
+
+
+        ShapedRecipe ironSpaceSuitLeggins = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_leggings"), getIronSpaceSuitLeggins());
+        ironSpaceSuitLeggins.shape("m%m","*A*","m%m");
+        ironSpaceSuitLeggins.setIngredient('*', Material.COPPER_INGOT);
+        ironSpaceSuitLeggins.setIngredient('%', Material.IRON_BLOCK);
+        ironSpaceSuitLeggins.setIngredient('A', Material.IRON_LEGGINGS);
+        ironSpaceSuitLeggins.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        getServer().addRecipe(ironSpaceSuitLeggins);
+
+        ShapedRecipe ironSpaceSuitBoots = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_boots"), getIronSpaceSuitBoots());
+        ironSpaceSuitBoots.shape("m%m","*A*","i%i");
+        ironSpaceSuitBoots.setIngredient('*', Material.COPPER_INGOT);
+        ironSpaceSuitBoots.setIngredient('%', Material.IRON_BLOCK);
+        ironSpaceSuitBoots.setIngredient('A', Material.IRON_BOOTS);
+        ironSpaceSuitBoots.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironSpaceSuitBoots.setIngredient( 'i', Material.IRON_INGOT);
+        getServer().addRecipe(ironSpaceSuitBoots);
+
+        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(30, 30));
+        ironOxygenTank.shape("i%i","%m%","*-*");
+        ironOxygenTank.setIngredient( 'i', Material.IRON_INGOT);
+        ironOxygenTank.setIngredient( '%', Material.TINTED_GLASS);
+        ironOxygenTank.setIngredient( 'm', Material.PHANTOM_MEMBRANE);
+        ironOxygenTank.setIngredient( '*', Material.COPPER_INGOT);
+        ironOxygenTank.setIngredient( '-', Material.IRON_TRAPDOOR);
+        getServer().addRecipe(ironOxygenTank);
 
         ShapedRecipe ironOxygenGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_generator"), getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
         ironOxygenGenerator.shape("b%b","%B%","imi");
