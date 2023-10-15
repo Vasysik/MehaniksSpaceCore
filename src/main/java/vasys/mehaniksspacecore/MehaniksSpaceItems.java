@@ -155,6 +155,13 @@ public class MehaniksSpaceItems {
         ironOxygenGenerator.setIngredient('i', Material.LIGHTNING_ROD);
         ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
         getServer().addRecipe(ironOxygenGenerator);
+
+        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0));
+        ironOxygenGenerator.shape("iei","eme","iei");
+        ironOxygenGenerator.setIngredient('i', Material.IRON_INGOT);
+        ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
+        ironOxygenGenerator.setIngredient('e', Material.ECHO_SHARD);
+        getServer().addRecipe(ironOxygenShieldGenerator);
     }
 
     public static ItemStack getIronSpaceSuitHelmet(Integer autoOxigenSpeed) {
@@ -239,26 +246,30 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getIronOxygenGenerator(ChatColor color, Integer oxygen, Integer copper) {
-//        ItemStack oxygenGenerator = new ItemStack(Material.PLAYER_HEAD);
-//        SkullMeta oxygenGeneratorMeta = (SkullMeta) oxygenGenerator.getItemMeta();
-//
-//        try {
-//            PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-//            PlayerTextures playerTextures = profile.getTextures();
-//            playerTextures.setSkin(new URL("http://textures.minecraft.net/texture/0d61ab0136c69d7caddd566d2e9bcb35fdc5f9e3ca351e27362abf1374c4e58"));
-//            profile.setTextures(playerTextures);
-//            oxygenGeneratorMeta.setPlayerProfile(profile);
-//        } catch (IllegalArgumentException | MalformedURLException e){getLogger().info("HEAD CAN'T DOWNLOAD");}
-//
-//        oxygenGeneratorMeta.setDisplayName(ChatColor.GRAY + "Oxygen Generator");
-//        oxygenGenerator.setItemMeta(oxygenGeneratorMeta);
-
         ItemStack oxygenGenerator = new ItemStack(Material.FIREWORK_STAR);
         ItemMeta oxygenGeneratorMeta = oxygenGenerator.getItemMeta();
         oxygenGeneratorMeta.setCustomModelData(1001);
         oxygenGeneratorMeta.setDisplayName(color + "Oxygen Generator " + oxygen + " " + copper);
         oxygenGenerator.setItemMeta(oxygenGeneratorMeta);
         return oxygenGenerator;
+    }
+
+    public static ItemStack getIronOxygenShieldGenerator(ChatColor color, Integer oxygen, Integer oil) {
+        ItemStack oxygenShieldGenerator = new ItemStack(Material.MAGMA_CREAM);
+        ItemMeta oxygenShieldGeneratorMeta = oxygenShieldGenerator.getItemMeta();
+        oxygenShieldGeneratorMeta.setCustomModelData(1001);
+        oxygenShieldGeneratorMeta.setDisplayName(color + "Oxygen Shield Generator " + oxygen + " " + oil);
+        oxygenShieldGenerator.setItemMeta(oxygenShieldGeneratorMeta);
+        return oxygenShieldGenerator;
+    }
+
+    public static ItemStack getOil() {
+        ItemStack oil = new ItemStack(Material.INK_SAC);
+        ItemMeta oilMeta = oil.getItemMeta();
+        oilMeta.setCustomModelData(1001);
+        oilMeta.setDisplayName(ChatColor.BLACK + "Oil");
+        oil.setItemMeta(oilMeta);
+        return oil;
     }
 
 }

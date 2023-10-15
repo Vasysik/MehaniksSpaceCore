@@ -7,6 +7,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -197,7 +198,36 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                     }
                                 }
                             }
-                        } else if (!itemFrame.isVisible() && itemFrame.getName().equals("Oxygen Generator")) {
+                        } else if (itemFrame.getName().equals("Oxygen Shield Generator") &&
+                                itemFrame.getItem().getType() == Material.MAGMA_CREAM) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+
+                            List<Container> containers = new ArrayList<Container>();
+                            int genX = itemFrame.getLocation().getBlockX();
+                            int genY = itemFrame.getLocation().getBlockY()-1;
+                            int genZ = itemFrame.getLocation().getBlockZ();
+
+
+                            if (itemFrame.getWorld().getBlockAt(genX + 1, genY, genZ).getState() instanceof InventoryHolder) {
+                                containers.add((Container) itemFrame.getWorld().getBlockAt(genX + 1, genY, genZ).getState());
+                            }
+                            if (itemFrame.getWorld().getBlockAt(genX - 1, genY, genZ).getState() instanceof InventoryHolder) {
+                                containers.add((Container) itemFrame.getWorld().getBlockAt(genX - 1, genY, genZ).getState());
+                            }
+                            if (itemFrame.getWorld().getBlockAt(genX, genY, genZ + 1).getState() instanceof InventoryHolder) {
+                                containers.add((Container) itemFrame.getWorld().getBlockAt(genX, genY, genZ + 1).getState());
+                            }
+                            if (itemFrame.getWorld().getBlockAt(genX, genY, genZ - 1).getState() instanceof InventoryHolder) {
+                                containers.add((Container) itemFrame.getWorld().getBlockAt(genX, genY, genZ - 1).getState());
+                            }
+
+                            if (containers.size() != 0) {
+                                for (Container container : containers) {
+
+                                }
+                            }
+
+                        } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
                             itemFrame.setCustomName("");
                             itemFrame.setVisible(true);
                         }
@@ -238,6 +268,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
                 return true;
             }
             if (args[0].equals("chestplate")) {
