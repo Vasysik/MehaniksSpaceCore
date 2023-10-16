@@ -1,21 +1,28 @@
 package vasys.mehaniksspacecore;
 
-import org.bukkit.*;
-import org.bukkit.block.Barrel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.Rotation;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.*;
-import java.util.logging.Level;
 
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
@@ -202,6 +209,12 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 itemFrame.getItem().getType() == Material.MAGMA_CREAM) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
+                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                            int oxygen = Integer.parseInt(name.split(" ")[2]);
+                            int oil = Integer.parseInt(name.split(" ")[3]);
+                            int maxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[1]);
+                            int oilMaxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[1]);
+
                             List<Container> containers = new ArrayList<Container>();
                             int genX = itemFrame.getLocation().getBlockX();
                             int genY = itemFrame.getLocation().getBlockY()-1;
@@ -223,8 +236,38 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                             if (containers.size() != 0) {
                                 for (Container container : containers) {
+                                    if (container.getInventory().contains(Material.CARROT_ON_A_STICK) || container.getInventory().contains(Material.INK_SAC)) {
+                                        for (ItemStack item : container.getInventory().getContents()) {
 
+                                            if (item.getType().equals(Material.CARROT_ON_A_STICK) &&
+                                                    item.getItemMeta().getCustomModelData() == 1001) {
+
+                                                ItemMeta itemMeta = item.getItemMeta();
+                                                List<String> loreOld = itemMeta.getLore();
+                                                List<String> lore = new ArrayList<>();
+                                                int min = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[0]);
+                                                int max = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[1]);
+
+                                                if (min > 0) {
+                                                    oxygen += min;
+                                                    min = 0;
+                                                    lore.add(ChatColor.WHITE + "volume: " + min + "/" + max);
+                                                    itemMeta.setLore(lore);
+                                                }
+                                            } else if (item.getType().equals(Material.INK_SAC) &&
+                                                    item.getItemMeta().getCustomModelData() == 1001) {
+                                                oil += 120;
+                                            }
+                                            itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
+                                        }
+                                    }
                                 }
+                            }
+
+
+
+                            if (oil > 0) {
+                                oil -= 1;
                             }
 
                         } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
@@ -268,7 +311,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 5, 360));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
                 return true;
             }

@@ -1,25 +1,21 @@
 package vasys.mehaniksspacecore;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import org.bukkit.*;
+import static org.bukkit.Bukkit.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ArmorMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
-import org.bukkit.profile.PlayerTextures;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import static org.bukkit.Bukkit.*;
 
 public class MehaniksSpaceItems {
 
@@ -156,7 +152,7 @@ public class MehaniksSpaceItems {
         ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
         getServer().addRecipe(ironOxygenGenerator);
 
-        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0));
+        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 5, 120));
         ironOxygenGenerator.shape("iei","eme","iei");
         ironOxygenGenerator.setIngredient('i', Material.IRON_INGOT);
         ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
@@ -254,11 +250,15 @@ public class MehaniksSpaceItems {
         return oxygenGenerator;
     }
 
-    public static ItemStack getIronOxygenShieldGenerator(ChatColor color, Integer oxygen, Integer oil) {
+    public static ItemStack getIronOxygenShieldGenerator(ChatColor color, Integer oxygen, Integer oil, Integer maxR, Integer oilMaxR) {
         ItemStack oxygenShieldGenerator = new ItemStack(Material.MAGMA_CREAM);
         ItemMeta oxygenShieldGeneratorMeta = oxygenShieldGenerator.getItemMeta();
         oxygenShieldGeneratorMeta.setCustomModelData(1001);
         oxygenShieldGeneratorMeta.setDisplayName(color + "Oxygen Shield Generator " + oxygen + " " + oil);
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Max radius: " + maxR);
+        lore.add(ChatColor.GRAY + "Oil for max radius: " + oilMaxR);
+        oxygenShieldGeneratorMeta.setLore(lore);
         oxygenShieldGenerator.setItemMeta(oxygenShieldGeneratorMeta);
         return oxygenShieldGenerator;
     }
@@ -271,5 +271,4 @@ public class MehaniksSpaceItems {
         oil.setItemMeta(oilMeta);
         return oil;
     }
-
 }
