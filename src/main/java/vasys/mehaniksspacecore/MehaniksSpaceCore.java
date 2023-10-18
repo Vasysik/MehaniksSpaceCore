@@ -41,7 +41,33 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (String s : MehaniksSpaceWorldList) {
                 for (Player player : getServer().getWorld(s).getPlayers()) {
-                    if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
+                    boolean inActiveOxygenShield = false;
+                    ItemFrame sItemFrame = null;
+                    for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 100, 100, 100)) { // This loops through all the entities, setting the variable "entity" to each element.
+                        if (entity.getType() == EntityType.GLOW_ITEM_FRAME && entity.getCustomName() == "Oxygen Shield Generator") {
+                            double distance = entity.getLocation().distance(player.getLocation());
+                            ItemFrame itemFrame = (ItemFrame) entity;
+                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                            int oxygen = Integer.parseInt(name.split(" ")[2]);
+                            int oil = Integer.parseInt(name.split(" ")[3]);
+                            int maxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[1]);
+                            int oilMaxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[1]);
+                            double sphereRadius = maxR;
+                            if(oil < oilMaxR) sphereRadius *= (double) oil /oilMaxR;
+                            if (distance <= sphereRadius && oxygen >= 0) {
+                                inActiveOxygenShield = true;
+                                sItemFrame = itemFrame;
+                            }
+                        }
+                    }
+                    if (inActiveOxygenShield) {
+                        String name = sItemFrame.getItem().getItemMeta().getDisplayName();
+                        int oxygen = Integer.parseInt(name.split(" ")[2])-1;
+                        int oil = Integer.parseInt(name.split(" ")[3]);
+                        int maxR = Integer.parseInt(sItemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[1]);
+                        int oilMaxR = Integer.parseInt(sItemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[1]);
+                        sItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
+                    } else if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
                             player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
                         ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
                         List<String> loreOld = spaceSuitChestplateMeta.getLore();
@@ -83,6 +109,13 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             lore.add(ChatColor.DARK_GRAY + "Tanks types: " + tanksTypes);
                             spaceSuitChestplateMeta.setLore(lore);
                             player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+
+                            if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
+                                player.removePotionEffect(PotionEffectType.POISON);
+                                player.removePotionEffect(PotionEffectType.CONFUSION);
+                                player.removePotionEffect(PotionEffectType.BLINDNESS);
+                            }
+
                         } else {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
@@ -92,6 +125,24 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                         player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
                         player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
+                    }
+
+                    if (!inActiveOxygenShield &&
+                            player.getInventory().getHelmet() == null || !player.getInventory().getHelmet().getItemMeta().hasCustomModelData() || player.getInventory().getHelmet().getItemMeta().getCustomModelData() != 1001 ||
+                            player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() || player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
+                            player.getInventory().getLeggings() == null || !player.getInventory().getLeggings().getItemMeta().hasCustomModelData() || player.getInventory().getLeggings().getItemMeta().getCustomModelData() != 1001 ||
+                            player.getInventory().getBoots() == null || !player.getInventory().getBoots().getItemMeta().hasCustomModelData() || player.getInventory().getBoots().getItemMeta().getCustomModelData() != 1001) {
+                        int temperature = MehaniksSpaceCore.MehaniksSpaceTemperatureList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(player.getWorld().getName()));
+                        if (temperature != 0) {
+                            if (temperature < 0 && !player.isFreezeTickingLocked()) {
+                                player.lockFreezeTicks(true);
+                                player.setFreezeTicks(Math.abs(temperature) * 20);
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, Math.abs(temperature)-1, true, false));
+                            }
+                        }
+                    } else if (player.isFreezeTickingLocked()) {
+                        player.lockFreezeTicks(false);
+                        player.removePotionEffect(PotionEffectType.WITHER);
                     }
                 }
             }
@@ -259,31 +310,25 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                     }
                                 }
                             }
-
                             Location sphereL = itemFrame.getLocation();
-
                             double sphereRadius = maxR;
-                            if(oil < oilMaxR) {
-                                sphereRadius *= (double) oil /oilMaxR;
-                            }
-
-                            for(double phi=0; phi<=Math.PI; phi+=Math.PI/15) {
-                                for(double theta=0; theta<=2*Math.PI; theta+=Math.PI/30) {
-                                    double x = sphereRadius*Math.cos(theta)*Math.sin(phi);
-                                    double y = sphereRadius*Math.cos(phi) + 1.5;
-                                    double z = sphereRadius*Math.sin(theta)*Math.sin(phi);
-
-                                    sphereL.add(x,y,z);
-                                    itemFrame.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, sphereL, 1, 0F, 0F, 0F, 0.001);
-                                    sphereL.subtract(x, y, z);
-                                }
-                            }
+                            if(oil < oilMaxR) sphereRadius *= (double) oil /oilMaxR;
 
                             if (oil > 0) {
                                 oil -= 1;
+                                for(double phi=0; phi<=Math.PI; phi+=Math.PI/15) {
+                                    for(double theta=0; theta<=2*Math.PI; theta+=Math.PI/30) {
+                                        double x = sphereRadius*Math.cos(theta)*Math.sin(phi);
+                                        double y = sphereRadius*Math.cos(phi) + 1.5;
+                                        double z = sphereRadius*Math.sin(theta)*Math.sin(phi);
+
+                                        sphereL.add(x,y,z);
+                                        itemFrame.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, sphereL, 1, 0F, 0F, 0F, 0.001);
+                                        sphereL.subtract(x, y, z);
+                                    }
+                                }
                                 itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
                             }
-
                         } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
                             itemFrame.setCustomName("");
                             itemFrame.setVisible(true);
