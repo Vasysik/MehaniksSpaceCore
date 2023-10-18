@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Rotation;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -264,10 +260,28 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 }
                             }
 
+                            Location sphereL = itemFrame.getLocation();
 
+                            double sphereRadius = maxR;
+                            if(oil < oilMaxR) {
+                                sphereRadius *= (double) oil /oilMaxR;
+                            }
+
+                            for(double phi=0; phi<=Math.PI; phi+=Math.PI/15) {
+                                for(double theta=0; theta<=2*Math.PI; theta+=Math.PI/30) {
+                                    double x = sphereRadius*Math.cos(theta)*Math.sin(phi);
+                                    double y = sphereRadius*Math.cos(phi) + 1.5;
+                                    double z = sphereRadius*Math.sin(theta)*Math.sin(phi);
+
+                                    sphereL.add(x,y,z);
+                                    itemFrame.getWorld().spawnParticle(Particle.SCULK_CHARGE_POP, sphereL, 1, 0F, 0F, 0F, 0.001);
+                                    sphereL.subtract(x, y, z);
+                                }
+                            }
 
                             if (oil > 0) {
                                 oil -= 1;
+                                itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
                             }
 
                         } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
