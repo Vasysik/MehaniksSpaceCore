@@ -159,7 +159,7 @@ public class MehaniksSpaceItems {
         ironOxygenShieldGenerator.setIngredient('e', Material.ECHO_SHARD);
         getServer().addRecipe(ironOxygenShieldGenerator);
 
-        ShapedRecipe ironOilGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oil_generator"), getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
+        ShapedRecipe ironOilGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oil_generator"), getIronOilGenerator(ChatColor.GRAY, 0, 0));
         ironOilGenerator.shape("iei","eme","iei");
         ironOilGenerator.setIngredient('i', Material.IRON_INGOT);
         ironOilGenerator.setIngredient('m', Material.HONEYCOMB_BLOCK);
