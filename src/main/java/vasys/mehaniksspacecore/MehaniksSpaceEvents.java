@@ -1,10 +1,11 @@
 package vasys.mehaniksspacecore;
 
-import org.bukkit.Bukkit;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -12,17 +13,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.*;
-import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.sql.BatchUpdateException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.bukkit.plugin.java.JavaPlugin.getPlugin;
 
 public class MehaniksSpaceEvents implements Listener {
     @EventHandler
@@ -237,6 +235,14 @@ public class MehaniksSpaceEvents implements Listener {
             event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5f, 1f);
             event.getRightClicked().setCustomNameVisible(true);
             event.getRightClicked().setCustomName("Oxygen Shield Generator");
+        } else if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
+                event.getPlayer().getInventory().getItemInMainHand().getType() == Material.HONEYCOMB &&
+                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
+                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+            event.getPlayer().playSound(event.getRightClicked(), Sound.ITEM_HONEY_BOTTLE_DRINK, 0.5f, 1f);
+            event.getRightClicked().setCustomNameVisible(true);
+            event.getRightClicked().setCustomName("Oil Generator");
         }
     }
 

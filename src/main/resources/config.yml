@@ -2,3 +2,9 @@ enabled: false
 # After setting the config, you can replace it with "true"
 useMultiverseCore: false
 # Does your server use the MultiverseCore plugin?
+fuelItems:
+  - CHICKEN
+  - COOKED_CHICKEN
+  - BEEF
+  - COOKED_BEEF
+  - MELON_SLICE

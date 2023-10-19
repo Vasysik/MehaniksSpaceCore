@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.*;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Rotation;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,9 +31,12 @@ public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceWorldList = new ArrayList<String>();
     public static List<Integer> MehaniksSpaceGravityList = new ArrayList<Integer>();
     public static List<Integer> MehaniksSpaceTemperatureList = new ArrayList<Integer>();
+    public static List<Material> fuelItems = new ArrayList<Material>();
     FileConfiguration config = this.getConfig();
     static public Boolean enabled = false;
     static public Boolean useMultiverseCore = false;
+
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -35,6 +44,9 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MehaniksSpaceEvents(), this);
         enabled = config.getBoolean("enabled");
         useMultiverseCore = config.getBoolean("useMultiverseCore");
+        for (String string : config.getStringList("fuelItems")) {
+            fuelItems.add(Material.getMaterial(string));
+        }
         MehaniksSpaceItems.addRecipes();
         getLogger().log(Level.INFO, "Mars WorldGenerator was enabled successfully.");
 
@@ -43,7 +55,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 for (Player player : getServer().getWorld(s).getPlayers()) {
                     boolean inActiveOxygenShield = false;
                     ItemFrame sItemFrame = null;
-                    for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 100, 100, 100)) { // This loops through all the entities, setting the variable "entity" to each element.
+                    for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 100, 100, 100)) {
                         if (entity.getType() == EntityType.GLOW_ITEM_FRAME && entity.getCustomName() == "Oxygen Shield Generator") {
                             double distance = entity.getLocation().distance(player.getLocation());
                             ItemFrame itemFrame = (ItemFrame) entity;
@@ -303,7 +315,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                 }
                                             } else if (item.getType().equals(Material.INK_SAC) &&
                                                     item.getItemMeta().getCustomModelData() == 1001) {
-                                                oil += 120;
+                                                oil += 120 * item.getAmount();
                                             }
                                             itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
                                         }
@@ -312,7 +324,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             }
                             Location sphereL = itemFrame.getLocation();
                             double sphereRadius = maxR;
-                            if(oil < oilMaxR) sphereRadius *= (double) oil /oilMaxR;
+                            if(oil < oilMaxR) sphereRadius *= (double) oil/oilMaxR;
 
                             if (oil > 0) {
                                 oil -= 1;
@@ -329,6 +341,31 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 }
                                 itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
                             }
+                        } else if (itemFrame.getName().equals("Oil Generator") &&
+                                itemFrame.getItem().getType() == Material.HONEYCOMB ) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                            int oil = Integer.parseInt(name.split(" ")[2]);
+                            int fuel = Integer.parseInt(name.split(" ")[3]);
+                            Container barrel = (Container) itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
+                            
+                            for (ItemStack item : barrel.getInventory().getContents()) {
+                                if (fuelItems.contains(item.getType())) {
+                                    fuel += item.getAmount() * 5;
+                                    item.setAmount(0);
+                                }
+                            }
+
+                            if (fuel >= 5) {
+                                fuel -= 5;
+                                oil += 1;
+                            }
+
+                            if (oil >= 50) {
+                                oil -= 50;
+                                barrel.getInventory().addItem(MehaniksSpaceItems.getOil());
+                            }
+
                         } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
                             itemFrame.setCustomName("");
                             itemFrame.setVisible(true);
@@ -360,6 +397,9 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 config = this.getConfig();
                 enabled = config.getBoolean("enabled");
                 useMultiverseCore = config.getBoolean("useMultiverseCore");
+                for (String string : config.getStringList("fuelItems")) {
+                    fuelItems.add(Material.getMaterial(string));
+                }
                 sender.sendMessage(ChatColor.GREEN + "MehaniksSpaceCore plugin successfully reloaded");
                 return true;
             }
@@ -370,6 +410,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 5, 360));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
                 return true;
