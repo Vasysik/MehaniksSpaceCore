@@ -388,7 +388,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             Container barrel = (Container) itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
                             
                             for (ItemStack item : barrel.getInventory().getContents()) {
-                                if (fuelItems.contains(item.getType())) {
+                                if (fuelItems.contains(item.getType()) || item.getType().isEdible()) {
+                                    if (item.getType().isEdible()) fuel += item.getAmount() * 15;
                                     fuel += item.getAmount() * 5;
                                     item.setAmount(0);
                                 }
