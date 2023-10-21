@@ -25,9 +25,6 @@ import org.bukkit.potion.PotionEffectType;
 public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
-//        event.getPlayer().sendMessage("from_world: " + event.getFrom().getName());
-//        event.getPlayer().sendMessage("to_world: " + event.getPlayer().getWorld().getName());
-//        event.getPlayer().sendMessage(MehaniksSpaceCore.MehaniksSpaceWorldList.toString());
         if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getPlayer().getWorld().getName())) {
             Player player = event.getPlayer();
             int gravity = MehaniksSpaceCore.MehaniksSpaceGravityList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName()));
@@ -44,44 +41,6 @@ public class MehaniksSpaceEvents implements Listener {
             player.removePotionEffect(PotionEffectType.CONFUSION);
         }
     }
-
-//    @EventHandler
-//    public void onPlayerMoveEvent(PlayerMoveEvent event) {
-////        event.getPlayer().sendMessage("world: " + event.getPlayer().getWorld().getName());
-////        event.getPlayer().sendMessage(MehaniksSpaceCore.MehaniksSpaceWorldList.toString());
-//        if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getPlayer().getWorld().getName())) {
-//            Player player = event.getPlayer();
-//            if (player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() ||
-//                    player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
-//                    Integer.parseInt(player.getInventory().getChestplate().getItemMeta().getLore().get(1).toString().split(" ")[1].toString().split("/")[0]) <= 0) {
-//                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
-//                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
-//                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
-//            } else if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
-//                player.removePotionEffect(PotionEffectType.POISON);
-//                player.removePotionEffect(PotionEffectType.CONFUSION);
-//                player.removePotionEffect(PotionEffectType.BLINDNESS);
-//            }
-//
-//            if (player.getInventory().getHelmet() == null || !player.getInventory().getHelmet().getItemMeta().hasCustomModelData() || player.getInventory().getHelmet().getItemMeta().getCustomModelData() != 1001 ||
-//                    player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() || player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
-//                    player.getInventory().getLeggings() == null || !player.getInventory().getLeggings().getItemMeta().hasCustomModelData() || player.getInventory().getLeggings().getItemMeta().getCustomModelData() != 1001 ||
-//                    player.getInventory().getBoots() == null || !player.getInventory().getBoots().getItemMeta().hasCustomModelData() || player.getInventory().getBoots().getItemMeta().getCustomModelData() != 1001) {
-//                int temperature = MehaniksSpaceCore.MehaniksSpaceTemperatureList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName()));
-//                if (temperature != 0) {
-//                    if (temperature < 0 && !player.isFreezeTickingLocked()) {
-//                        player.lockFreezeTicks(true);
-//                        player.setFreezeTicks(Math.abs(temperature) * 20);
-//                        player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, Math.abs(temperature)-1, true, false));
-//                    }
-//                }
-//            } else if (player.isFreezeTickingLocked()) {
-//                player.lockFreezeTicks(false);
-//                player.removePotionEffect(PotionEffectType.WITHER);
-//            }
-//
-//        }
-//    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -129,17 +88,7 @@ public class MehaniksSpaceEvents implements Listener {
                 int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) + addOxygen;
                 int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]) + addMaxOxygen;
 
-                String oxygenBar = "";
-                int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
-                oxygenBar += ChatColor.BLUE + "■".repeat(oxPercent);
-                int noOxPercent = 12 - oxygenBar.length();
-                oxygenBar += ChatColor.DARK_GRAY + "■".repeat(noOxPercent);
-
-                lore.add(ChatColor.WHITE + "" + tanks + "/" + loreOld.get(0).split(" ")[0].split("/")[1] + " oxygen tanks");
-                lore.add(ChatColor.WHITE + "[" + ChatColor.BLUE + "" + oxygenBar + "" + ChatColor.WHITE + "] " + oxygen + "/" + maxOxygen);
-                lore.add(ChatColor.DARK_GRAY + "Tanks types: " + tanksTypes);
-                spaceSuitChestplateMeta.setLore(lore);
-                player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+                MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
                 player.playSound(player, Sound.BLOCK_IRON_DOOR_CLOSE, 0.5f, 1f);
             }
         }
@@ -213,6 +162,16 @@ public class MehaniksSpaceEvents implements Listener {
                     itemFrame.remove();
                     itemFrame.getWorld().createExplosion(itemFrame, 2);
                 }
+            } else if (itemFrame.getItem().getType() == Material.MAGMA_CREAM &&
+                    itemFrame.getItem().getItemMeta().hasCustomModelData() &&
+                    itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
+                itemFrame.setCustomName("");
+                itemFrame.setVisible(true);
+            } else if (itemFrame.getItem().getType() == Material.HONEYCOMB &&
+                    itemFrame.getItem().getItemMeta().hasCustomModelData() &&
+                    itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
+                itemFrame.setCustomName("");
+                itemFrame.setVisible(true);
             }
         }
     }

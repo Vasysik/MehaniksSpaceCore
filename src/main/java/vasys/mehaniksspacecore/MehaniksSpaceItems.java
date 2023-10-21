@@ -152,14 +152,14 @@ public class MehaniksSpaceItems {
         ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
         getServer().addRecipe(ironOxygenGenerator);
 
-        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 5, 120));
+        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 10, 120));
         ironOxygenShieldGenerator.shape("iei","eme","iei");
         ironOxygenShieldGenerator.setIngredient('i', Material.IRON_INGOT);
         ironOxygenShieldGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
         ironOxygenShieldGenerator.setIngredient('e', Material.ECHO_SHARD);
         getServer().addRecipe(ironOxygenShieldGenerator);
 
-        ShapedRecipe ironOilGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oil_generator"), getIronOilGenerator(ChatColor.GRAY, 0, 0));
+        ShapedRecipe ironOilGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oil_generator"), getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
         ironOilGenerator.shape("iei","eme","iei");
         ironOilGenerator.setIngredient('i', Material.IRON_INGOT);
         ironOilGenerator.setIngredient('m', Material.HONEYCOMB_BLOCK);
