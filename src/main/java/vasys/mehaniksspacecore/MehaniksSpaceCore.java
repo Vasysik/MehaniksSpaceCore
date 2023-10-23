@@ -52,86 +52,88 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (String s : MehaniksSpaceWorldList) {
-                for (Player player : getServer().getWorld(s).getPlayers()) {
-                    ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
-                    if (oxigenShieldItemFrame != null) {
-                        String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
-                        int oxygen = Integer.parseInt(name.split(" ")[3])-1;
-                        int oil = Integer.parseInt(name.split(" ")[4]);
-                        int maxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
-                        int oilMaxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[4]);
-                        oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
-                        if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
-                            player.removePotionEffect(PotionEffectType.POISON);
-                            player.removePotionEffect(PotionEffectType.CONFUSION);
-                            player.removePotionEffect(PotionEffectType.BLINDNESS);
-                        }
-                    } else if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
-                            player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
-                        ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
-                        List<String> loreOld = spaceSuitChestplateMeta.getLore();
-
-                        if (Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) > 0) {
-                            List<String> lore = new ArrayList<>();
-                            int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
-                            int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
-                            int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
-                            String tanksTypes = loreOld.get(2).split(" ")[2];
-
-                            if (maxOxygen - oxygen >= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])) {
-                                tanks -= 1;
-                                maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
-
-                                if (player.getInventory().firstEmpty() != -1) {
-                                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
-                                } else {
-                                    player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
-                                }
-                                tanksTypes = "";
-                                String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
-                                for (int i = 0; i < tanksList.length - 1; i++) {
-                                    tanksTypes += tanksList[i];
-                                    if (i < tanksList.length - 2) {
-                                        tanksTypes += "/";
-                                    }
-                                }
-                            }
-
-                            MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
-
+                if (s != null) {
+                    for (Player player : getServer().getWorld(s).getPlayers()) {
+                        ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
+                        if (oxigenShieldItemFrame != null) {
+                            String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
+                            int oxygen = Integer.parseInt(name.split(" ")[3]) - 1;
+                            int oil = Integer.parseInt(name.split(" ")[4]);
+                            int maxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
+                            int oilMaxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[4]);
+                            oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
                             if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
                                 player.removePotionEffect(PotionEffectType.POISON);
                                 player.removePotionEffect(PotionEffectType.CONFUSION);
                                 player.removePotionEffect(PotionEffectType.BLINDNESS);
                             }
+                        } else if (player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
+                                player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
+                            ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
+                            List<String> loreOld = spaceSuitChestplateMeta.getLore();
 
+                            if (Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) > 0) {
+                                List<String> lore = new ArrayList<>();
+                                int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
+                                int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
+                                int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
+                                String tanksTypes = loreOld.get(2).split(" ")[2];
+
+                                if (maxOxygen - oxygen >= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])) {
+                                    tanks -= 1;
+                                    maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
+
+                                    if (player.getInventory().firstEmpty() != -1) {
+                                        player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
+                                    } else {
+                                        player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
+                                    }
+                                    tanksTypes = "";
+                                    String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
+                                    for (int i = 0; i < tanksList.length - 1; i++) {
+                                        tanksTypes += tanksList[i];
+                                        if (i < tanksList.length - 2) {
+                                            tanksTypes += "/";
+                                        }
+                                    }
+                                }
+
+                                MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
+
+                                if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
+                                    player.removePotionEffect(PotionEffectType.POISON);
+                                    player.removePotionEffect(PotionEffectType.CONFUSION);
+                                    player.removePotionEffect(PotionEffectType.BLINDNESS);
+                                }
+
+                            } else {
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
+                                player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
+                            }
                         } else {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
                             player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
                         }
-                    } else {
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
-                        player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
-                    }
 
-                    if (oxigenShieldItemFrame == null &&
-                            (player.getInventory().getHelmet() == null || !player.getInventory().getHelmet().getItemMeta().hasCustomModelData() || player.getInventory().getHelmet().getItemMeta().getCustomModelData() != 1001 ||
-                            player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() || player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
-                            player.getInventory().getLeggings() == null || !player.getInventory().getLeggings().getItemMeta().hasCustomModelData() || player.getInventory().getLeggings().getItemMeta().getCustomModelData() != 1001 ||
-                            player.getInventory().getBoots() == null || !player.getInventory().getBoots().getItemMeta().hasCustomModelData() || player.getInventory().getBoots().getItemMeta().getCustomModelData() != 1001)) {
-                        int temperature = MehaniksSpaceCore.MehaniksSpaceTemperatureList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(player.getWorld().getName()));
-                        if (temperature != 0) {
-                            if (temperature < 0 && !player.isFreezeTickingLocked()) {
-                                player.lockFreezeTicks(true);
-                                player.setFreezeTicks(Math.abs(temperature) * 20);
-                                player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, Math.abs(temperature)-1, true, false));
+                        if (oxigenShieldItemFrame == null &&
+                                (player.getInventory().getHelmet() == null || !player.getInventory().getHelmet().getItemMeta().hasCustomModelData() || player.getInventory().getHelmet().getItemMeta().getCustomModelData() != 1001 ||
+                                        player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() || player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
+                                        player.getInventory().getLeggings() == null || !player.getInventory().getLeggings().getItemMeta().hasCustomModelData() || player.getInventory().getLeggings().getItemMeta().getCustomModelData() != 1001 ||
+                                        player.getInventory().getBoots() == null || !player.getInventory().getBoots().getItemMeta().hasCustomModelData() || player.getInventory().getBoots().getItemMeta().getCustomModelData() != 1001)) {
+                            int temperature = MehaniksSpaceCore.MehaniksSpaceTemperatureList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(player.getWorld().getName()));
+                            if (temperature != 0) {
+                                if (temperature < 0 && !player.isFreezeTickingLocked()) {
+                                    player.lockFreezeTicks(true);
+                                    player.setFreezeTicks(Math.abs(temperature) * 20);
+                                    player.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, Math.abs(temperature) - 1, true, false));
+                                }
                             }
+                        } else if (player.isFreezeTickingLocked()) {
+                            player.lockFreezeTicks(false);
+                            player.removePotionEffect(PotionEffectType.WITHER);
                         }
-                    } else if (player.isFreezeTickingLocked()) {
-                        player.lockFreezeTicks(false);
-                        player.removePotionEffect(PotionEffectType.WITHER);
                     }
                 }
             }
@@ -249,8 +251,13 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
                             String name = itemFrame.getItem().getItemMeta().getDisplayName();
-                            int oxygen = Integer.parseInt(name.split(" ")[3]);
-                            int oil = Integer.parseInt(name.split(" ")[4]);
+
+                            int oxygen;
+                            int oil;
+                            if (name.split(" ")[3].equalsIgnoreCase("inf")) oxygen = Integer.MAX_VALUE;
+                            else oxygen = Integer.parseInt(name.split(" ")[3]);
+                            if (name.split(" ")[4].equalsIgnoreCase("inf")) oil = Integer.MAX_VALUE;
+                            else oil = Integer.parseInt(name.split(" ")[4]);
                             int maxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
                             int oilMaxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[4]);
 
