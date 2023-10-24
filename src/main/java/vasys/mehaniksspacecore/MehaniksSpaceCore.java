@@ -51,9 +51,9 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getLogger().log(Level.INFO, "Mars WorldGenerator was enabled successfully.");
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            for (String s : MehaniksSpaceWorldList) {
-                if (s != null) {
-                    for (Player player : getServer().getWorld(s).getPlayers()) {
+            for (World w : getServer().getWorlds()) {
+                for (Player player : w.getPlayers()) {
+                    if (MehaniksSpaceWorldList.contains(w.getName())) {
                         ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
                         if (oxigenShieldItemFrame != null) {
                             String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
@@ -134,6 +134,41 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             player.lockFreezeTicks(false);
                             player.removePotionEffect(PotionEffectType.WITHER);
                         }
+                    } else if (player.getWorld().getBlockAt(player.getLocation()).getType().equals(Material.WATER) &&
+                            player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
+                            player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
+                        ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
+                        List<String> loreOld = spaceSuitChestplateMeta.getLore();
+
+                        if (Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) > 0) {
+                            List<String> lore = new ArrayList<>();
+                            int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
+                            int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
+                            int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
+                            String tanksTypes = loreOld.get(2).split(" ")[2];
+
+                            if (maxOxygen - oxygen >= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])) {
+                                tanks -= 1;
+                                maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
+
+                                if (player.getInventory().firstEmpty() != -1) {
+                                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
+                                } else {
+                                    player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
+                                }
+                                tanksTypes = "";
+                                String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
+                                for (int i = 0; i < tanksList.length - 1; i++) {
+                                    tanksTypes += tanksList[i];
+                                    if (i < tanksList.length - 2) {
+                                        tanksTypes += "/";
+                                    }
+                                }
+                            }
+
+                            MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 5, 1, true, false));
+                        }
                     }
                 }
             }
@@ -144,6 +179,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 for (Player player : w.getPlayers()) {
                     ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
                     if ((!MehaniksSpaceWorldList.contains(w.getName()) || oxigenShieldItemFrame != null) &&
+                            !player.getWorld().getBlockAt(player.getLocation()).getType().equals(Material.WATER) &&
                             player.getInventory().getHelmet() != null && player.getInventory().getChestplate() != null &&
                             player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
                             player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001 &&
