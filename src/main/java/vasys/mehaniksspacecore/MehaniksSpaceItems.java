@@ -173,12 +173,31 @@ public class MehaniksSpaceItems {
         rocket.setIngredient('z', getRocketNozzle());
         getServer().addRecipe(rocket);
 
-        // ShapedRecipe rocketNose = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_nose"), getRocketNose());
-        // rocketNose.shape("#n#","#t#","#z#");
-        // rocketNose.setIngredient('n', getRocketNose());
-        // rocketNose.setIngredient('t', getRocketFuelTank());
-        // rocketNose.setIngredient('z', getRocketNozzle());
-        // getServer().addRecipe(rocketNose);
+        ShapedRecipe rocketNose = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_nose"), getRocketNose());
+        rocketNose.shape("d@d","%c%","#-#");
+        rocketNose.setIngredient('d', Material.DIAMOND);
+        rocketNose.setIngredient('@', Material.TINTED_GLASS);
+        rocketNose.setIngredient('%', Material.WAXED_COPPER_BLOCK);
+        rocketNose.setIngredient('#', Material.IRON_BLOCK);
+        rocketNose.setIngredient('-', Material.IRON_TRAPDOOR);
+        getServer().addRecipe(rocketNose);
+
+        ShapedRecipe rocketFuelTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_fuel_tank"), getRocketFuelTank());
+        rocketFuelTank.shape("%@%","#@#","%@%");
+        rocketFuelTank.setIngredient('@', Material.BARREL);
+        rocketFuelTank.setIngredient('%', Material.WAXED_COPPER_BLOCK);
+        rocketFuelTank.setIngredient('#', Material.IRON_BLOCK);
+        getServer().addRecipe(rocketFuelTank);
+
+        ShapedRecipe rocketNozzle = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_nozzle"), getRocketNozzle());
+        rocketNozzle.shape("%H%","#@#","nbn");
+        rocketNozzle.setIngredient('n', Material.NETHERITE_SCRAP);
+        rocketNozzle.setIngredient('@', Material.RESPAWN_ANCHOR);
+        rocketNozzle.setIngredient('%', Material.WAXED_COPPER_BLOCK);
+        rocketNozzle.setIngredient('#', Material.IRON_BLOCK);
+        rocketNozzle.setIngredient('b', Material.BLAZE_POWDER);
+        rocketNozzle.setIngredient('H', Material.HOPPER);
+        getServer().addRecipe(rocketNozzle);
     }
 
     public static ItemStack getIronSpaceSuitHelmet(Integer autoOxigenSpeed) {

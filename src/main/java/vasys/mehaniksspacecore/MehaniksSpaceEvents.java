@@ -162,14 +162,7 @@ public class MehaniksSpaceEvents implements Listener {
                     itemFrame.remove();
                     itemFrame.getWorld().createExplosion(itemFrame, 2);
                 }
-            } else if (itemFrame.getItem().getType() == Material.MAGMA_CREAM &&
-                    itemFrame.getItem().getItemMeta().hasCustomModelData() &&
-                    itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
-                itemFrame.setCustomName("");
-                itemFrame.setVisible(true);
-            } else if (itemFrame.getItem().getType() == Material.HONEYCOMB &&
-                    itemFrame.getItem().getItemMeta().hasCustomModelData() &&
-                    itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
+            } else if (itemFrame.getItem().getItemMeta().hasCustomModelData()) {
                 itemFrame.setCustomName("");
                 itemFrame.setVisible(true);
             }
