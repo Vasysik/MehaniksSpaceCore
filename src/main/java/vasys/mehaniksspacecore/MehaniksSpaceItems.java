@@ -165,6 +165,20 @@ public class MehaniksSpaceItems {
         ironOilGenerator.setIngredient('m', Material.HONEYCOMB_BLOCK);
         ironOilGenerator.setIngredient('e', Material.QUARTZ);
         getServer().addRecipe(ironOilGenerator);
+
+        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 60000));
+        rocket.shape("#n#","#t#","#z#");
+        rocket.setIngredient('n', getRocketNose());
+        rocket.setIngredient('t', getRocketFuelTank());
+        rocket.setIngredient('z', getRocketNozzle());
+        getServer().addRecipe(rocket);
+
+        // ShapedRecipe rocketNose = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_nose"), getRocketNose());
+        // rocketNose.shape("#n#","#t#","#z#");
+        // rocketNose.setIngredient('n', getRocketNose());
+        // rocketNose.setIngredient('t', getRocketFuelTank());
+        // rocketNose.setIngredient('z', getRocketNozzle());
+        // getServer().addRecipe(rocketNose);
     }
 
     public static ItemStack getIronSpaceSuitHelmet(Integer autoOxigenSpeed) {
@@ -287,4 +301,75 @@ public class MehaniksSpaceItems {
         oil.setItemMeta(oilMeta);
         return oil;
     }
+
+    public static ItemStack getRocket(Integer maxOil, Integer maxStorage, Integer maxDistance) {
+        ItemStack rocket = new ItemStack(Material.NETHERITE_SCRAP);
+        ItemMeta rocketMeta = rocket.getItemMeta();
+
+        rocketMeta.setCustomModelData(1001);
+
+        rocketMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.GRAY + "Max oil: " + maxOil);
+        lore.add(ChatColor.GRAY + "Max storage: " + maxStorage);
+        lore.add(ChatColor.GRAY + "Max distance: " + maxDistance);
+        rocketMeta.setLore(lore);
+        rocket.setItemMeta(rocketMeta);
+        return rocket;
+    }
+
+    public static ItemStack getRocketNose() {
+        ItemStack rocketNose = new ItemStack(Material.DIAMOND);
+        ItemMeta rocketNoseMeta = rocketNose.getItemMeta();
+        rocketNoseMeta.setCustomModelData(1001);
+        rocketNoseMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket Nose");
+        rocketNose.setItemMeta(rocketNoseMeta);
+        return rocketNose;
+    }
+
+    public static ItemStack getRocketFuelTank() {
+        ItemStack rocketFuelTank = new ItemStack(Material.LAPIS_LAZULI);
+        ItemMeta rocketFuelTankMeta = rocketFuelTank.getItemMeta();
+        rocketFuelTankMeta.setCustomModelData(1001);
+        rocketFuelTankMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket Fuel Tank");
+        rocketFuelTank.setItemMeta(rocketFuelTankMeta);
+        return rocketFuelTank;
+    }
+
+    public static ItemStack getRocketNozzle() {
+        ItemStack rocketNozzle = new ItemStack(Material.BLAZE_POWDER);
+        ItemMeta rocketNozzleMeta = rocketNozzle.getItemMeta();
+        rocketNozzleMeta.setCustomModelData(1001);
+        rocketNozzleMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket Nozzle");
+        rocketNozzle.setItemMeta(rocketNozzleMeta);
+        return rocketNozzle;
+    }
+
+    public static ItemStack getRocketConrolPanel() {
+        ItemStack rocketControlPanel = new ItemStack(Material.NAUTILUS_SHELL);
+        ItemMeta rocketControlPanelMeta = rocketControlPanel.getItemMeta();
+        rocketControlPanelMeta.setCustomModelData(1001);
+        rocketControlPanelMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket Control Panel");
+        rocketControlPanel.setItemMeta(rocketControlPanelMeta);
+        return rocketControlPanel;
+    }
+
+    public static ItemStack getFlightControlPanel() {
+        ItemStack flightControlPanel = new ItemStack(Material.AMETHYST_SHARD);
+        ItemMeta flightControlPanelMeta = flightControlPanel.getItemMeta();
+        flightControlPanelMeta.setCustomModelData(1001);
+        flightControlPanelMeta.setDisplayName(ChatColor.DARK_GRAY + "Flight Control Panel");
+        flightControlPanel.setItemMeta(flightControlPanelMeta);
+        return flightControlPanel;
+    }
+
+    public static ItemStack getRocketModificationPanel() {
+        ItemStack rocketModificationPanel = new ItemStack(Material.EMERALD);
+        ItemMeta rocketModificationPanelMeta = rocketModificationPanel.getItemMeta();
+        rocketModificationPanelMeta.setCustomModelData(1001);
+        rocketModificationPanelMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket Modification Panel");
+        rocketModificationPanel.setItemMeta(rocketModificationPanelMeta);
+        return rocketModificationPanel;
+    }
+
 }
