@@ -171,30 +171,61 @@ public class MehaniksSpaceEvents implements Listener {
 
     @EventHandler
     public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
-        if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
-                event.getPlayer().getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
-                event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
-            event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
-            event.getRightClicked().setCustomNameVisible(true);
-            event.getRightClicked().setCustomName("Oxygen Generator");
-        } else if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
-                event.getPlayer().getInventory().getItemInMainHand().getType() == Material.MAGMA_CREAM &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
-                event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.SCULK_CATALYST) {
-            event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5f, 1f);
-            event.getRightClicked().setCustomNameVisible(true);
-            event.getRightClicked().setCustomName("Oxygen Shield Generator");
-        } else if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME &&
-                event.getPlayer().getInventory().getItemInMainHand().getType() == Material.HONEYCOMB &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
-                event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY()-1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
-            event.getPlayer().playSound(event.getRightClicked(), Sound.ITEM_HONEY_BOTTLE_DRINK, 0.5f, 1f);
-            event.getRightClicked().setCustomNameVisible(true);
-            event.getRightClicked().setCustomName("Oil Generator");
+        if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME && event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData()) {
+
+            if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
+                    (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 ||
+                            event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1002 ||
+                            event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1003 ||
+                            event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1004) &&
+                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+                event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
+                event.getRightClicked().setCustomNameVisible(true);
+                event.getRightClicked().setCustomName("Oxygen Generator");
+
+            } else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.MAGMA_CREAM &&
+                    event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.SCULK_CATALYST) {
+                event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_SCULK_CATALYST_BLOOM, 0.5f, 1f);
+                event.getRightClicked().setCustomNameVisible(true);
+                event.getRightClicked().setCustomName("Oxygen Shield Generator");
+
+            } else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.HONEYCOMB &&
+                    event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+                event.getPlayer().playSound(event.getRightClicked(), Sound.ITEM_HONEY_BOTTLE_DRINK, 0.5f, 1f);
+                event.getRightClicked().setCustomNameVisible(true);
+                event.getRightClicked().setCustomName("Oil Generator");
+
+            } //else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.NAUTILUS_SHELL &&
+//                    event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+//                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+//                event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
+//                event.getRightClicked().setCustomNameVisible(true);
+//                event.getRightClicked().setCustomName("Rocket Conrol Panel");
+//
+//            } else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.AMETHYST_SHARD &&
+//                    event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+//                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+//                event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
+//                event.getRightClicked().setCustomNameVisible(true);
+//                event.getRightClicked().setCustomName("Flight Control Panel");
+//
+//            } else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.NAUTILUS_SHELL &&
+//                    event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+//                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+//                event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
+//                event.getRightClicked().setCustomNameVisible(true);
+//                event.getRightClicked().setCustomName("Rocket Conrol Panel");
+//
+//            } else if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.NAUTILUS_SHELL &&
+//                    event.getPlayer().getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+//                    event.getPlayer().getWorld().getBlockAt(event.getRightClicked().getLocation().getBlockX(), event.getRightClicked().getLocation().getBlockY() - 1, event.getRightClicked().getLocation().getBlockZ()).getType() == Material.BARREL) {
+//                event.getPlayer().playSound(event.getRightClicked(), Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
+//                event.getRightClicked().setCustomNameVisible(true);
+//                event.getRightClicked().setCustomName("Rocket Conrol Panel");
+//
+//            }
         }
     }
 
