@@ -18,8 +18,23 @@ import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
 public class MehaniksSpaceItems {
+    public static List<Material> itemMaterialList = new ArrayList<Material>();
+    public static List<Integer> itemModelDatalList = new ArrayList<Integer>();
 
     public static void addRecipes() {
+        itemMaterialList.add(Material.FIREWORK_STAR);
+        itemMaterialList.add(Material.MAGMA_CREAM);
+        itemMaterialList.add(Material.HONEYCOMB);
+        itemMaterialList.add(Material.NAUTILUS_SHELL);
+        itemMaterialList.add(Material.AMETHYST_SHARD);
+        itemMaterialList.add(Material.EMERALD);
+        itemMaterialList.add(Material.NETHERITE_SCRAP);
+
+        itemModelDatalList.add(1001);
+        itemModelDatalList.add(1002);
+        itemModelDatalList.add(1003);
+        itemModelDatalList.add(1004);
+
         ShapedRecipe ironSpaceSuitHelmet = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet"), getIronSpaceSuitHelmet(0));
         ironSpaceSuitHelmet.shape("*%*","%A%","mTm");
         ironSpaceSuitHelmet.setIngredient('*', Material.COPPER_INGOT);

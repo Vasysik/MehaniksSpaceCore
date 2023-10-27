@@ -2,15 +2,14 @@ package vasys.mehaniksspacecore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
-import org.bukkit.Rotation;
 import org.bukkit.Sound;
 import org.bukkit.World;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -48,7 +47,6 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             fuelItems.add(Material.getMaterial(string));
         }
         MehaniksSpaceItems.addRecipes();
-        getLogger().log(Level.INFO, "Mars WorldGenerator was enabled successfully.");
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (World w : getServer().getWorlds()) {
@@ -234,53 +232,60 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                         if (itemFrame.getName().equals("Oxygen Generator") &&
                                 itemFrame.getItem().getType() == Material.FIREWORK_STAR) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
+                            
+                            BlockState block = itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
+                            
+                            if (block.getType() == Material.BARREL) {
+                                Container barrel = (Container) block;
 
-                            Container barrel = (Container) itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
-
-                            if (barrel.getInventory().contains(Material.WATER_BUCKET) || barrel.getInventory().contains(Material.COPPER_INGOT)) {
-                                String name = itemFrame.getItem().getItemMeta().getDisplayName();
-                                int oxygen = Integer.parseInt(name.split(" ")[2]);
-                                int copper = Integer.parseInt(name.split(" ")[3]);
-                                for (ItemStack i : barrel.getInventory().getContents()) {
-                                    if (i != null && i.getType() == Material.WATER_BUCKET) {
-                                        oxygen += 600;
-                                        i.setType(Material.BUCKET);
+                                if (barrel.getInventory().contains(Material.WATER_BUCKET) || barrel.getInventory().contains(Material.COPPER_INGOT)) {
+                                    String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                                    int oxygen = Integer.parseInt(name.split(" ")[2]);
+                                    int copper = Integer.parseInt(name.split(" ")[3]);
+                                    for (ItemStack i : barrel.getInventory().getContents()) {
+                                        if (i != null && i.getType() == Material.WATER_BUCKET) {
+                                            oxygen += 600;
+                                            i.setType(Material.BUCKET);
+                                        }
+                                        if (i != null && i.getType() == Material.COPPER_INGOT) {
+                                            copper += 30 * i.getAmount();
+                                            i.setType(Material.GRAY_DYE);
+                                        }
                                     }
-                                    if (i != null && i.getType() == Material.COPPER_INGOT) {
-                                        copper += 30 * i.getAmount();
-                                        i.setType(Material.GRAY_DYE);
-                                    }
-                                }
-                                itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
-                            } else if (barrel.getInventory().contains(Material.CARROT_ON_A_STICK)) {
-                                for (ItemStack item : barrel.getInventory().getContents()) {
-                                    if (item != null && item.getType() == Material.CARROT_ON_A_STICK &&
-                                            item.getItemMeta().hasCustomModelData() &&
-                                            item.getItemMeta().getCustomModelData() == 1001) {
-                                        ItemMeta itemMeta = item.getItemMeta();
-                                        String name = itemFrame.getItem().getItemMeta().getDisplayName();
-                                        List<String> loreOld = itemMeta.getLore();
-                                        List<String> lore = new ArrayList<>();
-                                        int min = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[0]);
-                                        int max = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[1]);
-                                        int oxygen = Integer.parseInt(name.split(" ")[2]) - 1;
-                                        int copper = Integer.parseInt(name.split(" ")[3]) - 5;
+                                    itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
+                                } else if (barrel.getInventory().contains(Material.CARROT_ON_A_STICK)) {
+                                    for (ItemStack item : barrel.getInventory().getContents()) {
+                                        if (item != null && item.getType() == Material.CARROT_ON_A_STICK &&
+                                                item.getItemMeta().hasCustomModelData() &&
+                                                item.getItemMeta().getCustomModelData() == 1001) {
+                                            ItemMeta itemMeta = item.getItemMeta();
+                                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                                            List<String> loreOld = itemMeta.getLore();
+                                            List<String> lore = new ArrayList<>();
+                                            int min = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[0]);
+                                            int max = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[1]);
+                                            int oxygen = Integer.parseInt(name.split(" ")[2]) - 1;
+                                            int copper = Integer.parseInt(name.split(" ")[3]) - 5;
 
-                                        if (min < max && oxygen >= 0 && copper >= 0) {
-                                            min += 5;
-                                            lore.add(ChatColor.WHITE + "volume: " + min + "/" + max);
-                                            itemMeta.setLore(lore);
-                                            item.setItemMeta(itemMeta);
+                                            if (min < max && oxygen >= 0 && copper >= 0) {
+                                                min += 5;
+                                                lore.add(ChatColor.WHITE + "volume: " + min + "/" + max);
+                                                itemMeta.setLore(lore);
+                                                item.setItemMeta(itemMeta);
 
-                                            MehaniksSpaceFunctions.itemFrameRotate(itemFrame);
+                                                MehaniksSpaceFunctions.itemFrameRotate(itemFrame);
 
-                                            world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
+                                                world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
 
-                                            if (oxygen == 0 || copper == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, oxygen, copper));
-                                            else itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
+                                                if (oxygen == 0 || copper == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, oxygen, copper));
+                                                else itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
+                                            }
                                         }
                                     }
                                 }
+                            } else {
+                                itemFrame.remove();
+                                itemFrame.getWorld().createExplosion(itemFrame, 2);
                             }
                         } else if (itemFrame.getName().equals("Oxygen Shield Generator") &&
                                 itemFrame.getItem().getType() == Material.MAGMA_CREAM) {
@@ -372,33 +377,73 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             String name = itemFrame.getItem().getItemMeta().getDisplayName();
                             int oil = Integer.parseInt(name.split(" ")[2]);
                             int fuel = Integer.parseInt(name.split(" ")[3]);
-                            Container barrel = (Container) itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
+
+                            BlockState block = itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
                             
-                            for (ItemStack item : barrel.getInventory().getContents()) {
-                                if (item != null && (fuelItems.contains(item.getType()) || item.getType().isEdible())) {
-                                    if (item.getType().isEdible()) fuel += item.getAmount() * 15;
-                                    fuel += item.getAmount() * 5;
-                                    item.setAmount(0);
-                                    itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+                            if (block.getType() == Material.BARREL) {
+                                Container barrel = (Container) block;
+
+                                for (ItemStack item : barrel.getInventory().getContents()) {
+                                    if (item != null && (fuelItems.contains(item.getType()) || item.getType().isEdible())) {
+                                        if (item.getType().isEdible()) fuel += item.getAmount() * 15;
+                                        fuel += item.getAmount() * 5;
+                                        item.setAmount(0);
+                                        itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+                                    }
                                 }
+
+                                if (fuel >= 5) {
+                                    fuel -= 5;
+                                    oil += 1;
+                                    if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
+                                    else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+
+                                    MehaniksSpaceFunctions.itemFrameRotate(itemFrame);
+                                }
+
+                                if (oil >= 50) {
+                                    oil -= 50;
+                                    barrel.getInventory().addItem(MehaniksSpaceItems.getOil());
+
+                                    if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
+                                    else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+                                }
+                            } else {
+                                itemFrame.remove();
+                                itemFrame.getWorld().createExplosion(itemFrame, 1);
                             }
 
-                            if (fuel >= 5) {
-                                fuel -= 5;
-                                oil += 1;
-                                if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
-                                else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+                        } else if (itemFrame.getName().equals("Rocket") &&
+                                itemFrame.getItem().getType() == Material.NETHERITE_SCRAP) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
-                                MehaniksSpaceFunctions.itemFrameRotate(itemFrame);
-                            }
+                            //
+                            //
+                            //
 
-                            if (oil >= 50) {
-                                oil -= 50;
-                                barrel.getInventory().addItem(MehaniksSpaceItems.getOil());
+                        } else if (itemFrame.getName().equals("Rocket Conrol Panel") &&
+                                itemFrame.getItem().getType() == Material.NAUTILUS_SHELL) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
-                                if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
-                                else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
-                            }
+                            //
+                            //
+                            //
+
+                        } else if (itemFrame.getName().equals("Flight Control Panel") &&
+                                itemFrame.getItem().getType() == Material.AMETHYST_SHARD) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+
+                            //
+                            //
+                            //
+
+                        } else if (itemFrame.getName().equals("Rocket Modification Panel") &&
+                                itemFrame.getItem().getType() == Material.EMERALD) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+
+                            //
+                            //
+                            //
 
                         } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
                             itemFrame.setCustomName("");
