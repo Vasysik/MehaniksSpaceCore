@@ -181,7 +181,7 @@ public class MehaniksSpaceItems {
         ironOilGenerator.setIngredient('e', Material.QUARTZ);
         getServer().addRecipe(ironOilGenerator);
 
-        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 60000));
+        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 60000, null, null));
         rocket.shape("#n#","#t#","#z#");
         rocket.setIngredient('n', getRocketNose());
         rocket.setIngredient('t', getRocketFuelTank());
@@ -336,7 +336,7 @@ public class MehaniksSpaceItems {
         return oil;
     }
 
-    public static ItemStack getRocket(Integer maxOil, Integer maxStorage, Integer maxDistance) {
+    public static ItemStack getRocket(Integer maxOil, Integer maxStorage, Integer currentOil, String currentStorage, String endPoint) {
         ItemStack rocket = new ItemStack(Material.NETHERITE_SCRAP);
         ItemMeta rocketMeta = rocket.getItemMeta();
 
@@ -346,7 +346,9 @@ public class MehaniksSpaceItems {
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.GRAY + "Max oil: " + maxOil);
         lore.add(ChatColor.GRAY + "Max storage: " + maxStorage);
-        lore.add(ChatColor.GRAY + "Max distance: " + maxDistance);
+        lore.add(ChatColor.GRAY + "Current oil: " + currentOil);
+        lore.add(ChatColor.GRAY + "Current storage: " + currentStorage.toString());
+        lore.add(ChatColor.GRAY + "End Point: " + endPoint);
         rocketMeta.setLore(lore);
         rocket.setItemMeta(rocketMeta);
         return rocket;

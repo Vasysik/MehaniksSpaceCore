@@ -25,15 +25,14 @@ import org.bukkit.potion.PotionEffectType;
 public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
-        if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getPlayer().getWorld().getName())) {
-            Player player = event.getPlayer();
-            int gravity = MehaniksSpaceCore.MehaniksSpaceGravityList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName()));
+        Player player = event.getPlayer();
+        if (MehaniksSpaceCore.MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
+            int gravity = Integer.parseInt(MehaniksSpaceCore.MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(0));
             if (gravity != 0) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
             }
-        } else if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getFrom().getName())) {
-            Player player = event.getPlayer();
+        } else if (MehaniksSpaceCore.MehaniksSpaceWorldMap.containsKey(event.getFrom().getName())) {
             player.lockFreezeTicks(false);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW_FALLING);
@@ -44,15 +43,14 @@ public class MehaniksSpaceEvents implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if (MehaniksSpaceCore.MehaniksSpaceWorldList.contains(event.getPlayer().getWorld().getName())) {
-            Player player = event.getPlayer();
-            int gravity = MehaniksSpaceCore.MehaniksSpaceGravityList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(event.getPlayer().getWorld().getName()));
+        Player player = event.getPlayer();
+        if (MehaniksSpaceCore.MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
+            int gravity = Integer.parseInt(MehaniksSpaceCore.MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
             if (gravity != 0) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
             }
         } else {
-            Player player = event.getPlayer();
             player.setGravity(true);
             player.lockFreezeTicks(false);
             player.removePotionEffect(PotionEffectType.JUMP);

@@ -1,16 +1,15 @@
 package vasys.mehaniksspacecore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,9 +26,10 @@ import org.bukkit.potion.PotionEffectType;
 
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
-    public static List<String> MehaniksSpaceWorldList = new ArrayList<String>();
-    public static List<Integer> MehaniksSpaceGravityList = new ArrayList<Integer>();
-    public static List<Integer> MehaniksSpaceTemperatureList = new ArrayList<Integer>();
+
+    public static HashMap<String, List<String>> MehaniksSpaceWorldMap = new HashMap<>();
+    public static List<String> MehaniksSpaceWorldMapKeys = new ArrayList<>();
+
     public static List<Material> fuelItems = new ArrayList<Material>();
     FileConfiguration config = this.getConfig();
     static public Boolean enabled = false;
@@ -51,7 +51,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (World w : getServer().getWorlds()) {
                 for (Player player : w.getPlayers()) {
-                    if (MehaniksSpaceWorldList.contains(w.getName())) {
+                    if (MehaniksSpaceWorldMap.containsKey(w.getName())) {
                         ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
                         if (oxigenShieldItemFrame != null) {
                             String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
@@ -120,7 +120,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                         player.getInventory().getChestplate() == null || !player.getInventory().getChestplate().getItemMeta().hasCustomModelData() || player.getInventory().getChestplate().getItemMeta().getCustomModelData() != 1001 ||
                                         player.getInventory().getLeggings() == null || !player.getInventory().getLeggings().getItemMeta().hasCustomModelData() || player.getInventory().getLeggings().getItemMeta().getCustomModelData() != 1001 ||
                                         player.getInventory().getBoots() == null || !player.getInventory().getBoots().getItemMeta().hasCustomModelData() || player.getInventory().getBoots().getItemMeta().getCustomModelData() != 1001)) {
-                            int temperature = MehaniksSpaceCore.MehaniksSpaceTemperatureList.get(MehaniksSpaceCore.MehaniksSpaceWorldList.indexOf(player.getWorld().getName()));
+                            int temperature = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(2));
                             if (temperature != 0) {
                                 if (temperature < 0 && !player.isFreezeTickingLocked()) {
                                     player.lockFreezeTicks(true);
@@ -176,7 +176,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             for (World w : getServer().getWorlds()) {
                 for (Player player : w.getPlayers()) {
                     ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
-                    if ((!MehaniksSpaceWorldList.contains(w.getName()) || oxigenShieldItemFrame != null) &&
+                    if ((!MehaniksSpaceWorldMap.containsKey(w.getName()) || oxigenShieldItemFrame != null) &&
                             !player.getWorld().getBlockAt(player.getLocation()).getType().equals(Material.WATER) &&
                             player.getInventory().getHelmet() != null && player.getInventory().getChestplate() != null &&
                             player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
@@ -293,12 +293,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                             String name = itemFrame.getItem().getItemMeta().getDisplayName();
 
-                            int oxygen;
-                            int oil;
-                            if (name.split(" ")[3].equalsIgnoreCase("inf")) oxygen = Integer.MAX_VALUE;
-                            else oxygen = Integer.parseInt(name.split(" ")[3]);
-                            if (name.split(" ")[4].equalsIgnoreCase("inf")) oil = Integer.MAX_VALUE;
-                            else oil = Integer.parseInt(name.split(" ")[4]);
+                            int oxygen = Integer.parseInt(name.split(" ")[3]);
+                            int oil = Integer.parseInt(name.split(" ")[4]);
                             int maxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
                             int oilMaxR = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[4]);
 
@@ -417,33 +413,99 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 itemFrame.getItem().getType() == Material.NETHERITE_SCRAP) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
-                            //
-                            //
-                            //
+                            int maxOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
+                            int maxStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[2]);
+                            int currentOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(2).split(" ")[2]);
+                            String currentStorage = itemFrame.getItem().getItemMeta().getLore().get(3).split(" ")[2];
+                            String endPoint = itemFrame.getItem().getItemMeta().getLore().get(4).split(" ")[2];
 
-                        } else if (itemFrame.getName().equals("Rocket Conrol Panel") &&
-                                itemFrame.getItem().getType() == Material.NAUTILUS_SHELL) {
-                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+                            ItemFrame rocketControlPanel = null;
+                            ItemFrame flightControlPanel = null;
+                            ItemFrame rocketModificationPanel = null;
 
-                            //
-                            //
-                            //
+                            for (Entity nearbyEntity : itemFrame.getWorld().getNearbyEntities(itemFrame.getLocation(), 2, 2, 2)) {
+                                if (nearbyEntity.getType() == EntityType.GLOW_ITEM_FRAME) {
+                                    ItemFrame nearbyItemFrame = (ItemFrame) nearbyEntity;
+                                    if (nearbyItemFrame.getName().equals("Rocket Conrol Panel")) {
+                                        rocketControlPanel = nearbyItemFrame;
+                                    } else if (nearbyItemFrame.getName().equals("Flight Control Panel")) {
+                                        flightControlPanel = nearbyItemFrame;
+                                    } else if (nearbyItemFrame.getName().equals("Rocket Modification Panel")) {
+                                        rocketModificationPanel = nearbyItemFrame;
+                                    }
+                                }
+                            }
 
-                        } else if (itemFrame.getName().equals("Flight Control Panel") &&
-                                itemFrame.getItem().getType() == Material.AMETHYST_SHARD) {
-                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+                            if (rocketControlPanel != null) {
+                                if (rocketControlPanel.isVisible()) rocketControlPanel.setVisible(false);
+                                BlockState signBlock = rocketControlPanel.getWorld().getBlockAt(rocketControlPanel.getLocation().getBlockX(), rocketControlPanel.getLocation().getBlockY(), rocketControlPanel.getLocation().getBlockZ()).getState();
 
-                            //
-                            //
-                            //
+                                //
+                                //
+                                //
 
-                        } else if (itemFrame.getName().equals("Rocket Modification Panel") &&
-                                itemFrame.getItem().getType() == Material.EMERALD) {
-                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+                                if (signBlock instanceof Sign) {
+                                    SignSide sign = ((Sign) signBlock).getSide(Side.FRONT);
+                                    sign.setGlowingText(true);
+                                    sign.setColor(DyeColor.GREEN);
 
-                            //
-                            //
-                            //
+                                    sign.setLine(0, "Oil:    " + "0".repeat(10 - String.valueOf(currentOil).length()) + currentOil);
+                                    sign.setLine(1, "Strg: " + "0".repeat(10 - String.valueOf(currentStorage).length()) + currentStorage);
+                                    sign.setLine(2, "MaxO: " + "0".repeat(10 - String.valueOf(maxOil).length()) + maxOil);
+                                    sign.setLine(3, "MaxS: " + "0".repeat(10 - String.valueOf(maxStorage).length()) + maxStorage);
+                                }
+                            }
+
+                            if (flightControlPanel != null) {
+                                if (flightControlPanel.isVisible()) flightControlPanel.setVisible(false);
+                                BlockState signBlock = flightControlPanel.getWorld().getBlockAt(flightControlPanel.getLocation().getBlockX(), flightControlPanel.getLocation().getBlockY(), flightControlPanel.getLocation().getBlockZ()).getState();
+
+                                //
+                                //
+                                //
+
+                                if (signBlock instanceof Sign) {
+                                    SignSide sign = ((Sign) signBlock).getSide(Side.FRONT);
+                                    sign.setGlowingText(true);
+                                    sign.setColor(DyeColor.GREEN);
+
+                                    if (sign.getLine(0).split(" ").length == 3 &&
+                                            !endPoint.equals(sign.getLine(0).split(" ")[2])) endPoint = sign.getLine(0).split(" ")[2];
+
+                                    int distance = 0;
+                                    for (String key : MehaniksSpaceWorldMapKeys) {
+                                        if (MehaniksSpaceWorldMap.get(key).get(0) == sign.getLine(0).split(" ")[2]) {
+                                            distance = Integer.parseInt(MehaniksSpaceWorldMap.get(key).get(3));
+                                        }
+                                    }
+
+                                    sign.setLine(0, "End Point: " + endPoint);
+                                    sign.setLine(2, "Dist:  " + "0".repeat(10 - String.valueOf(distance).length()) + distance);
+                                    sign.setLine(3, "Oil:    " + "0".repeat(10 - String.valueOf(Math.round((float) distance /100)).length()) + currentStorage);
+                                }
+                            }
+
+                            if (rocketModificationPanel != null) {
+                                if (rocketModificationPanel.isVisible()) rocketModificationPanel.setVisible(false);
+                                BlockState signBlock = rocketModificationPanel.getWorld().getBlockAt(rocketModificationPanel.getLocation().getBlockX(), rocketModificationPanel.getLocation().getBlockY(), rocketModificationPanel.getLocation().getBlockZ()).getState();
+
+                                //
+                                //
+                                //
+
+                                if (signBlock instanceof Sign) {
+                                    SignSide sign = ((Sign) signBlock).getSide(Side.FRONT);
+                                    sign.setGlowingText(true);
+                                    sign.setColor(DyeColor.GREEN);
+
+                                    sign.setLine(0, "Modifications:");
+                                    sign.setLine(1, "-");
+                                    sign.setLine(2, "-");
+                                    sign.setLine(3, "-");
+                                }
+                            }
+
+                            itemFrame.setItem(MehaniksSpaceItems.getRocket(maxOil, maxStorage, currentOil, currentStorage, endPoint));
 
                         } else if (!itemFrame.isVisible() && (itemFrame.getName().equals("Oxygen Generator") ||  itemFrame.getName().equals("Oxygen Shield Generator"))) {
                             itemFrame.setCustomName("");
@@ -497,7 +559,15 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             if (args[0].equals("chestplate")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
             if (args[0].equals("tank")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
             if (args[0].equals("helmet")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(Integer.parseInt(args[1])));
-            if (args[0].equals("shield")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4])));
+            if (args[0].equals("shield")) {
+                int oxygen;
+                int oil;
+                if (args[3].equalsIgnoreCase("inf")) oxygen = Integer.MAX_VALUE;
+                else oxygen = Integer.parseInt(args[3]);
+                if (args[4].equalsIgnoreCase("inf")) oil = Integer.MAX_VALUE;
+                else oil = Integer.parseInt(args[4]);
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, Integer.parseInt(args[1]), Integer.parseInt(args[2]), oxygen, oil));
+            }
             sender.sendMessage(ChatColor.RED + "ms !null");
             return false;
         }
