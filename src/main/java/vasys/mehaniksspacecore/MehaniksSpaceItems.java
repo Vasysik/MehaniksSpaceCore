@@ -167,7 +167,7 @@ public class MehaniksSpaceItems {
         ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
         getServer().addRecipe(ironOxygenGenerator);
 
-        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 10, 120));
+        ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));
         ironOxygenShieldGenerator.shape("iei","eme","iei");
         ironOxygenShieldGenerator.setIngredient('i', Material.IRON_INGOT);
         ironOxygenShieldGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
@@ -181,7 +181,7 @@ public class MehaniksSpaceItems {
         ironOilGenerator.setIngredient('e', Material.QUARTZ);
         getServer().addRecipe(ironOilGenerator);
 
-        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 60000, null, null));
+        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 0, 0, null));
         rocket.shape("#n#","#t#","#z#");
         rocket.setIngredient('n', getRocketNose());
         rocket.setIngredient('t', getRocketFuelTank());
@@ -314,7 +314,7 @@ public class MehaniksSpaceItems {
         return oilGenerator;
     }
 
-    public static ItemStack getIronOxygenShieldGenerator(ChatColor color, Integer oxygen, Integer oil, Integer maxR, Integer oilMaxR) {
+    public static ItemStack getIronOxygenShieldGenerator(ChatColor color, Integer maxR, Integer oilMaxR, Integer oxygen, Integer oil) {
         ItemStack oxygenShieldGenerator = new ItemStack(Material.MAGMA_CREAM);
         ItemMeta oxygenShieldGeneratorMeta = oxygenShieldGenerator.getItemMeta();
         oxygenShieldGeneratorMeta.setCustomModelData(1001);
@@ -336,7 +336,7 @@ public class MehaniksSpaceItems {
         return oil;
     }
 
-    public static ItemStack getRocket(Integer maxOil, Integer maxStorage, Integer currentOil, String currentStorage, String endPoint) {
+    public static ItemStack getRocket(Integer maxOil, Integer maxStorage, Integer currentOil, Integer currentStorage, String endPoint) {
         ItemStack rocket = new ItemStack(Material.NETHERITE_SCRAP);
         ItemMeta rocketMeta = rocket.getItemMeta();
 
@@ -347,7 +347,7 @@ public class MehaniksSpaceItems {
         lore.add(ChatColor.GRAY + "Max oil: " + maxOil);
         lore.add(ChatColor.GRAY + "Max storage: " + maxStorage);
         lore.add(ChatColor.GRAY + "Current oil: " + currentOil);
-        lore.add(ChatColor.GRAY + "Current storage: " + currentStorage.toString());
+        lore.add(ChatColor.GRAY + "Current storage: " + currentStorage);
         lore.add(ChatColor.GRAY + "End Point: " + endPoint);
         rocketMeta.setLore(lore);
         rocket.setItemMeta(rocketMeta);

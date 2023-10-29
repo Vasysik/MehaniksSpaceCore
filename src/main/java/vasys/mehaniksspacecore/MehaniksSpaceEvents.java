@@ -215,8 +215,8 @@ public class MehaniksSpaceEvents implements Listener {
                 } else if (player.getInventory().getItemInMainHand().getType() == Material.AMETHYST_SHARD &&
                         player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001) {
                     player.playSound(itemFrame, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
-                    player.setCustomNameVisible(true);
-                    player.setCustomName("Flight Control Panel");
+                    itemFrame.setCustomNameVisible(true);
+                    itemFrame.setCustomName("Flight Control Panel");
 
                 } else if (player.getInventory().getItemInMainHand().getType() == Material.EMERALD &&
                         player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
@@ -226,9 +226,6 @@ public class MehaniksSpaceEvents implements Listener {
                     itemFrame.setCustomName("Rocket Modification Panel");
                 }
             }
-
-            if(MehaniksSpaceItems.itemMaterialList.contains(itemFrame.getItem().getType()) && 
-                MehaniksSpaceItems.itemModelDatalList.contains(itemFrame.getItem().getItemMeta().getCustomModelData())) event.setCancelled(true);
         }
     }
 

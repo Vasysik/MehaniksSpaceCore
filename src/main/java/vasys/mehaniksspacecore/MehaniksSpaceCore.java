@@ -3,7 +3,9 @@ package vasys.mehaniksspacecore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
@@ -339,6 +341,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                     item.setItemMeta(itemMeta);
                                                 }
                                             } else if (item != null && item.getType().equals(Material.INK_SAC) &&
+                                                    item.getItemMeta().hasCustomModelData() &&
                                                     item.getItemMeta().getCustomModelData() == 1001) {
                                                 oil += 120 * item.getAmount();
                                                 item.setAmount(0);
@@ -410,13 +413,14 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             }
 
                         } else if (itemFrame.getName().equals("Rocket") &&
-                                itemFrame.getItem().getType() == Material.NETHERITE_SCRAP) {
+                                itemFrame.getItem().getType() == Material.NETHERITE_SCRAP &&
+                                itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState().getType() == Material.LODESTONE) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
 
                             int maxOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
                             int maxStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[2]);
                             int currentOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(2).split(" ")[2]);
-                            String currentStorage = itemFrame.getItem().getItemMeta().getLore().get(3).split(" ")[2];
+                            int currentStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(3).split(" ")[2]);
                             String endPoint = itemFrame.getItem().getItemMeta().getLore().get(4).split(" ")[2];
 
                             ItemFrame rocketControlPanel = null;
@@ -424,13 +428,13 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             ItemFrame rocketModificationPanel = null;
 
                             for (Entity nearbyEntity : itemFrame.getWorld().getNearbyEntities(itemFrame.getLocation(), 2, 2, 2)) {
-                                if (nearbyEntity.getType() == EntityType.GLOW_ITEM_FRAME) {
+                                if (nearbyEntity.getType() == EntityType.GLOW_ITEM_FRAME && nearbyEntity.getCustomName() != null) {
                                     ItemFrame nearbyItemFrame = (ItemFrame) nearbyEntity;
-                                    if (nearbyItemFrame.getName().equals("Rocket Conrol Panel")) {
+                                    if (nearbyItemFrame.getCustomName().equals("Rocket Conrol Panel")) {
                                         rocketControlPanel = nearbyItemFrame;
-                                    } else if (nearbyItemFrame.getName().equals("Flight Control Panel")) {
+                                    } else if (nearbyItemFrame.getCustomName().equals("Flight Control Panel")) {
                                         flightControlPanel = nearbyItemFrame;
-                                    } else if (nearbyItemFrame.getName().equals("Rocket Modification Panel")) {
+                                    } else if (nearbyItemFrame.getCustomName().equals("Rocket Modification Panel")) {
                                         rocketModificationPanel = nearbyItemFrame;
                                     }
                                 }
@@ -439,30 +443,49 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             if (rocketControlPanel != null) {
                                 if (rocketControlPanel.isVisible()) rocketControlPanel.setVisible(false);
                                 BlockState signBlock = rocketControlPanel.getWorld().getBlockAt(rocketControlPanel.getLocation().getBlockX(), rocketControlPanel.getLocation().getBlockY(), rocketControlPanel.getLocation().getBlockZ()).getState();
+                                BlockState block = rocketControlPanel.getWorld().getBlockAt(rocketControlPanel.getLocation().getBlockX(), rocketControlPanel.getLocation().getBlockY() - 1, rocketControlPanel.getLocation().getBlockZ()).getState();
 
-                                //
-                                //
-                                //
+                                if (block.getType() == Material.BARREL) {
+                                    Container barrel = (Container) block;
+
+                                    if (!barrel.getInventory().isEmpty()) {
+                                        for (ItemStack itemStack : barrel.getInventory().getContents()) {
+                                            if (itemStack != null) {
+                                                currentStorage = 0;
+                                                if (itemStack.getType() == Material.INK_SAC &&
+                                                        itemStack.getItemMeta().hasCustomModelData() &&
+                                                        itemStack.getItemMeta().getCustomModelData() == 1001) {
+
+                                                    currentOil += itemStack.getAmount();
+                                                    itemStack.setAmount(0);
+
+                                                } else {
+                                                    if (maxStorage <= currentStorage) {
+                                                        rocketControlPanel.getWorld().dropItem(rocketControlPanel.getLocation(), itemStack);
+                                                        itemStack.setAmount(0);
+                                                    } else currentStorage += itemStack.getAmount();
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
 
                                 if (signBlock instanceof Sign) {
                                     SignSide sign = ((Sign) signBlock).getSide(Side.FRONT);
                                     sign.setGlowingText(true);
                                     sign.setColor(DyeColor.GREEN);
 
-                                    sign.setLine(0, "Oil:    " + "0".repeat(10 - String.valueOf(currentOil).length()) + currentOil);
-                                    sign.setLine(1, "Strg: " + "0".repeat(10 - String.valueOf(currentStorage).length()) + currentStorage);
-                                    sign.setLine(2, "MaxO: " + "0".repeat(10 - String.valueOf(maxOil).length()) + maxOil);
-                                    sign.setLine(3, "MaxS: " + "0".repeat(10 - String.valueOf(maxStorage).length()) + maxStorage);
+                                    sign.line(0, Component.text("Oil:    " + "0".repeat(10 - String.valueOf(currentOil).length()) + currentOil));
+                                    sign.line(1, Component.text("Strg: " + "0".repeat(10 - String.valueOf(currentStorage).length()) + currentStorage));
+                                    sign.line(2, Component.text("MaxO: " + "0".repeat(10 - String.valueOf(maxOil).length()) + maxOil));
+                                    sign.line(3, Component.text("MaxS: " + "0".repeat(10 - String.valueOf(maxStorage).length()) + maxStorage));
+                                    ((Sign) signBlock).update();
                                 }
                             }
 
                             if (flightControlPanel != null) {
                                 if (flightControlPanel.isVisible()) flightControlPanel.setVisible(false);
                                 BlockState signBlock = flightControlPanel.getWorld().getBlockAt(flightControlPanel.getLocation().getBlockX(), flightControlPanel.getLocation().getBlockY(), flightControlPanel.getLocation().getBlockZ()).getState();
-
-                                //
-                                //
-                                //
 
                                 if (signBlock instanceof Sign) {
                                     SignSide sign = ((Sign) signBlock).getSide(Side.FRONT);
@@ -474,14 +497,15 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                                     int distance = 0;
                                     for (String key : MehaniksSpaceWorldMapKeys) {
-                                        if (MehaniksSpaceWorldMap.get(key).get(0) == sign.getLine(0).split(" ")[2]) {
+                                        if (sign.getLine(0).split(" ").length == 3 && Objects.equals(MehaniksSpaceWorldMap.get(key).get(0), sign.getLine(0).split(" ")[2])) {
                                             distance = Integer.parseInt(MehaniksSpaceWorldMap.get(key).get(3));
                                         }
                                     }
 
-                                    sign.setLine(0, "End Point: " + endPoint);
-                                    sign.setLine(2, "Dist:  " + "0".repeat(10 - String.valueOf(distance).length()) + distance);
-                                    sign.setLine(3, "Oil:    " + "0".repeat(10 - String.valueOf(Math.round((float) distance /100)).length()) + currentStorage);
+                                    sign.line(0, Component.text("End Point: " + endPoint));
+                                    sign.line(2, Component.text("Dist:  " + "0".repeat(10 - String.valueOf(distance).length()) + distance));
+                                    sign.line(3, Component.text("Oil:    " + "0".repeat(10 - String.valueOf(Math.round((float) distance /100)).length()) + Math.round((float) distance /100)));
+                                    ((Sign) signBlock).update();
                                 }
                             }
 
@@ -498,10 +522,11 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                     sign.setGlowingText(true);
                                     sign.setColor(DyeColor.GREEN);
 
-                                    sign.setLine(0, "Modifications:");
-                                    sign.setLine(1, "-");
-                                    sign.setLine(2, "-");
-                                    sign.setLine(3, "-");
+                                    sign.line(0, Component.text("Modifications:"));
+                                    sign.line(1, Component.text("-"));
+                                    sign.line(2, Component.text("-"));
+                                    sign.line(3, Component.text("-"));
+                                    ((Sign) signBlock).update();
                                 }
                             }
 
@@ -552,8 +577,15 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 0, 0, 5, 360));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNose());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketFuelTank());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNozzle());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(2000, 0, 0, 0, null));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketConrolPanel());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getFlightControlPanel());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketModificationPanel());
                 return true;
             }
             if (args[0].equals("chestplate")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
@@ -568,6 +600,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 else oil = Integer.parseInt(args[4]);
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, Integer.parseInt(args[1]), Integer.parseInt(args[2]), oxygen, oil));
             }
+            if (args[0].equals("rocket")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), args[5]));
             sender.sendMessage(ChatColor.RED + "ms !null");
             return false;
         }
