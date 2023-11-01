@@ -1,3 +1,7 @@
+mainWorld: world
+#main world
+seed: 12345
+#seed for world generator plugin
 enabled: false
 # After setting the config, you can replace it with "true"
 useMultiverseCore: false

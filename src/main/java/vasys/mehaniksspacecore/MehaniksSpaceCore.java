@@ -37,6 +37,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
     static public Boolean enabled = false;
     static public Boolean useMultiverseCore = false;
 
+    static public String mainWorld = "world";
+    static public int seed = 0;
 
     @Override
     public void onEnable() {
@@ -45,6 +47,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new MehaniksSpaceEvents(), this);
         enabled = config.getBoolean("enabled");
         useMultiverseCore = config.getBoolean("useMultiverseCore");
+        mainWorld = config.getString("mainWorld");
+        seed = config.getInt("seed");
         for (String string : config.getStringList("fuelItems")) {
             fuelItems.add(Material.getMaterial(string));
         }
@@ -563,6 +567,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 config = this.getConfig();
                 enabled = config.getBoolean("enabled");
                 useMultiverseCore = config.getBoolean("useMultiverseCore");
+                mainWorld = config.getString("mainWorld");
+                seed = config.getInt("seed");
                 for (String string : config.getStringList("fuelItems")) {
                     fuelItems.add(Material.getMaterial(string));
                 }
@@ -574,7 +580,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(1));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(30, 30));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(150, 150));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));

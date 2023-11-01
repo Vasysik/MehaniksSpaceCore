@@ -149,7 +149,7 @@ public class MehaniksSpaceItems {
         ironSpaceSuitBoots.setIngredient( 'i', Material.IRON_INGOT);
         getServer().addRecipe(ironSpaceSuitBoots);
 
-        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(30, 30));
+        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(0, 150));
         ironOxygenTank.shape("i%i","%m%","*-*");
         ironOxygenTank.setIngredient( 'i', Material.IRON_INGOT);
         ironOxygenTank.setIngredient( '%', Material.TINTED_GLASS);
