@@ -11,6 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
+import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
+import static vasys.mehaniksspacecore.MehaniksSpaceCore.MehaniksSpaceWorldMap;
+
 public class MehaniksSpaceFunctions {
     public static void itemFrameRotate(ItemFrame itemFrame) {
         if (itemFrame.getRotation() == Rotation.NONE) itemFrame.setRotation(Rotation.CLOCKWISE_45);
@@ -59,5 +62,36 @@ public class MehaniksSpaceFunctions {
             }
         }
         return oxigenShieldItemFrame;
+    }
+
+    public static int getDistance(ItemFrame itemFrame, String endPoint) {
+        int distance = 0;
+        if (!endPoint.equals("none") && (MehaniksSpaceWorldMapKeys.contains(itemFrame.getWorld().getName()) || itemFrame.getWorld().getName().equals(mainWorld))) {
+            if (endPoint.equals(mainWorld)) {
+                if (itemFrame.getWorld().getName().equals(mainWorld)) distance = 0;
+                else distance = Integer.parseInt(MehaniksSpaceWorldMap.get(itemFrame.getWorld().getName()).get(3));
+            } else for (String key : MehaniksSpaceWorldMapKeys) {
+                if (MehaniksSpaceWorldMap.get(key).get(0).equals(endPoint)) {
+                    distance = Integer.parseInt(MehaniksSpaceWorldMap.get(key).get(3));
+                    if (key.equals(itemFrame.getName()))
+                        distance = 0;
+                }
+            }
+        }
+        return distance;
+    }
+
+    public static String getWorldName(ItemFrame itemFrame, String endPoint) {
+        String worldName = "";
+        if (!endPoint.equals("none") && (MehaniksSpaceWorldMapKeys.contains(itemFrame.getWorld().getName()) || itemFrame.getWorld().getName().equals(mainWorld))) {
+            if (endPoint.equals(mainWorld)) {
+                worldName = mainWorld;
+            } else for (String key : MehaniksSpaceWorldMapKeys) {
+                if (MehaniksSpaceWorldMap.get(key).get(0).equals(endPoint)) {
+                    worldName = key;
+                }
+            }
+        }
+        return worldName;
     }
 }

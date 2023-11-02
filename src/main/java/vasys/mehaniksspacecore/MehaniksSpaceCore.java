@@ -58,6 +58,13 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             for (World w : getServer().getWorlds()) {
                 for (Player player : w.getPlayers()) {
                     if (MehaniksSpaceWorldMap.containsKey(w.getName())) {
+
+                        int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
+                        if (!player.hasPotionEffect(PotionEffectType.JUMP) && gravity != 0) {
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
+                            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
+                        }
+
                         ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
                         if (oxigenShieldItemFrame != null) {
                             String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
@@ -499,16 +506,11 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                     if (sign.getLine(0).split(" ").length == 3 &&
                                             !endPoint.equals(sign.getLine(0).split(" ")[2])) endPoint = sign.getLine(0).split(" ")[2];
 
-                                    int distance = 0;
-                                    for (String key : MehaniksSpaceWorldMapKeys) {
-                                        if (sign.getLine(0).split(" ").length == 3 && Objects.equals(MehaniksSpaceWorldMap.get(key).get(0), sign.getLine(0).split(" ")[2])) {
-                                            distance = Integer.parseInt(MehaniksSpaceWorldMap.get(key).get(3));
-                                        }
-                                    }
+                                    int distance = MehaniksSpaceFunctions.getDistance(itemFrame, endPoint);
 
                                     sign.line(0, Component.text("End Point: " + endPoint));
                                     sign.line(2, Component.text("Dist:  " + "0".repeat(10 - String.valueOf(distance).length()) + distance));
-                                    sign.line(3, Component.text("Oil:    " + "0".repeat(10 - String.valueOf(Math.round((float) distance /100)).length()) + Math.round((float) distance /100)));
+                                    sign.line(3, Component.text("Oil:    " + "0".repeat(10 - String.valueOf(Math.round((float) distance/100)).length()) + Math.round((float) distance /100)));
                                     ((Sign) signBlock).update();
                                 }
                             }

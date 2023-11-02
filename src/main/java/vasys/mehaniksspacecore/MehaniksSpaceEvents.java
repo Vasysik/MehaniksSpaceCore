@@ -2,13 +2,15 @@ package vasys.mehaniksspacecore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Rabbit;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -18,21 +20,24 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
 
 public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
-        if (MehaniksSpaceCore.MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
-            int gravity = Integer.parseInt(MehaniksSpaceCore.MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(0));
+        if (MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
+            int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(0));
             if (gravity != 0) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
             }
-        } else if (MehaniksSpaceCore.MehaniksSpaceWorldMap.containsKey(event.getFrom().getName())) {
+        } else if (MehaniksSpaceWorldMap.containsKey(event.getFrom().getName())) {
             player.lockFreezeTicks(false);
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW_FALLING);
@@ -44,8 +49,8 @@ public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if (MehaniksSpaceCore.MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
-            int gravity = Integer.parseInt(MehaniksSpaceCore.MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
+        if (MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
+            int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
             if (gravity != 0) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
@@ -173,8 +178,8 @@ public class MehaniksSpaceEvents implements Listener {
         if (event.getRightClicked().getType() == EntityType.GLOW_ITEM_FRAME) {
             ItemFrame itemFrame = (ItemFrame) event.getRightClicked();
             Player player = event.getPlayer();
-            if (event.getPlayer().getInventory().getItemInMainHand().getItemMeta().hasCustomModelData()) {
-
+            if (!player.getInventory().getItemInMainHand().isEmpty() &&
+                    player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData()) {
                 if (player.getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
                         (player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 ||
                                 player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1002 ||
@@ -224,6 +229,31 @@ public class MehaniksSpaceEvents implements Listener {
                     player.playSound(itemFrame, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE, 0.5f, 1f);
                     itemFrame.setCustomNameVisible(true);
                     itemFrame.setCustomName("Rocket Modification Panel");
+                }
+            } else if (itemFrame.getName().equals("Rocket") &&
+                    player.isSneaking() &&
+                    itemFrame.getItem().getType() == Material.NETHERITE_SCRAP &&
+                    itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState().getType() == Material.LODESTONE) {
+                int maxOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
+                int maxStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[2]);
+                int currentOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(2).split(" ")[2]);
+                int currentStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(3).split(" ")[2]);
+                String endPoint = itemFrame.getItem().getItemMeta().getLore().get(4).split(" ")[2];
+                int needOil = Math.round((float) MehaniksSpaceFunctions.getDistance(itemFrame, endPoint) /100);
+
+                if (currentOil >= needOil) {
+                    itemFrame.setItem(ItemStack.empty());
+                    Random random = new Random();
+                    World world = getPlugin(MehaniksSpaceCore.class).getServer().getWorld(MehaniksSpaceFunctions.getWorldName(itemFrame, endPoint));
+                    int rX = random.nextInt(2001) - 1000;
+                    int rZ = random.nextInt(2001) - 1000;
+                    getPlugin(MehaniksSpaceCore.class).getLogger().info(world.getName() + " " + rX + " " + rZ);
+
+                    //
+                    //
+                    //
+
+                    player.teleport(new Location(world, rX, 319, rZ));
                 }
             }
         }
