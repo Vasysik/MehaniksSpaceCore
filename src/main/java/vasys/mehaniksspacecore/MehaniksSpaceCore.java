@@ -239,7 +239,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                     if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
                         ItemFrame itemFrame = (ItemFrame) entity;
                         if (itemFrame.getName().equals("Oxygen Generator") &&
-                                itemFrame.getItem().getType() == Material.FIREWORK_STAR) {
+                                itemFrame.getItem().getType() == Material.COPPER_INGOT) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
                             
                             BlockState block = itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
@@ -261,7 +261,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                             i.setType(Material.GRAY_DYE);
                                         }
                                     }
-                                    itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
+                                    if (oxygen <= 0 || copper <= 0) itemFrame.setItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, oxygen, copper));
+                                    else itemFrame.setItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.BLUE, oxygen, copper));
                                 } else if (barrel.getInventory().contains(Material.CARROT_ON_A_STICK)) {
                                     for (ItemStack item : barrel.getInventory().getContents()) {
                                         if (item != null && item.getType() == Material.CARROT_ON_A_STICK &&
@@ -286,8 +287,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                                                 world.playSound(entity.getLocation(), Sound.ENTITY_PLAYER_BREATH, 0.5f, 1f);
 
-                                                if (oxygen == 0 || copper == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, oxygen, copper));
-                                                else itemFrame.setItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.BLUE, oxygen, copper));
+                                                if (oxygen <= 0 || copper <= 0) itemFrame.setItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, oxygen, copper));
+                                                else itemFrame.setItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.BLUE, oxygen, copper));
                                             }
                                         }
                                     }
@@ -353,7 +354,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                 oil += 120 * item.getAmount();
                                                 item.setAmount(0);
                                             }
-                                            itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
+                                            if (oxygen <= 0 || oil <= 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, maxR, oilMaxR, oxygen, oil));
+                                            else itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
                                         }
                                     }
                                 }
@@ -375,7 +377,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                         sphereL.subtract(x, y, z);
                                     }
                                 }
-                                itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
+                                if (oxygen <= 0 || oil <= 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, maxR, oilMaxR, oxygen, oil));
+                                else itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
                             }
                         } else if (itemFrame.getName().equals("Oil Generator") &&
                                 itemFrame.getItem().getType() == Material.HONEYCOMB ) {
@@ -462,10 +465,10 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                 if (itemStack.getType() == Material.INK_SAC &&
                                                         itemStack.getItemMeta().hasCustomModelData() &&
                                                         itemStack.getItemMeta().getCustomModelData() == 1001) {
-
-                                                    currentOil += itemStack.getAmount();
-                                                    itemStack.setAmount(0);
-
+                                                    if  (Math.round((float) MehaniksSpaceFunctions.getDistance(itemFrame, endPoint) /100) < currentOil + itemStack.getAmount()) {
+                                                        currentOil += itemStack.getAmount();
+                                                        itemStack.setAmount(0);
+                                                    }
                                                 } else {
                                                     if (maxStorage < currentStorage + itemStack.getAmount() || Arrays.stream(barrel.getInventory().getContents()).filter(x -> x != null).toList().size() + 1 >= barrel.getInventory().getSize()) {
                                                         rocketControlPanel.getWorld().dropItem(rocketControlPanel.getLocation(), itemStack);
@@ -578,15 +581,15 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(1));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(150, 150));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(300, 300));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNose());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketFuelTank());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNozzle());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(2000, 0, 0, 0, null));
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(2000, 0, 0, 0, "none"));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketConrolPanel());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getFlightControlPanel());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketModificationPanel());

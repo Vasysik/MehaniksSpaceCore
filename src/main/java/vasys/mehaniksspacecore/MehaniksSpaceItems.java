@@ -22,7 +22,7 @@ public class MehaniksSpaceItems {
     public static List<Integer> itemModelDatalList = new ArrayList<Integer>();
 
     public static void addRecipes() {
-        itemMaterialList.add(Material.FIREWORK_STAR);
+        itemMaterialList.add(Material.COPPER_INGOT);
         itemMaterialList.add(Material.MAGMA_CREAM);
         itemMaterialList.add(Material.HONEYCOMB);
         itemMaterialList.add(Material.NAUTILUS_SHELL);
@@ -149,7 +149,7 @@ public class MehaniksSpaceItems {
         ironSpaceSuitBoots.setIngredient( 'i', Material.IRON_INGOT);
         getServer().addRecipe(ironSpaceSuitBoots);
 
-        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(0, 150));
+        ShapedRecipe ironOxygenTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank"), getIronOxygenTank(0, 300));
         ironOxygenTank.shape("i%i","%m%","*-*");
         ironOxygenTank.setIngredient( 'i', Material.IRON_INGOT);
         ironOxygenTank.setIngredient( '%', Material.TINTED_GLASS);
@@ -158,14 +158,45 @@ public class MehaniksSpaceItems {
         ironOxygenTank.setIngredient( '-', Material.IRON_TRAPDOOR);
         getServer().addRecipe(ironOxygenTank);
 
-        ShapedRecipe ironOxygenGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_generator"), getIronOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
-        ironOxygenGenerator.shape("b%b","%B%","imi");
-        ironOxygenGenerator.setIngredient('b', Material.BLAZE_POWDER);
-        ironOxygenGenerator.setIngredient('%', Material.TINTED_GLASS);
-        ironOxygenGenerator.setIngredient('B', Material.BUCKET);
-        ironOxygenGenerator.setIngredient('i', Material.LIGHTNING_ROD);
-        ironOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
-        getServer().addRecipe(ironOxygenGenerator);
+        ShapedRecipe ironOxygenTank2 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank_2"), getIronOxygenTank(0, 600));
+        ironOxygenTank2.shape("c#c","#O#","cnc");
+        ironOxygenTank2.setIngredient( '#', Material.TINTED_GLASS);
+        ironOxygenTank2.setIngredient( 'c', Material.COPPER_INGOT);
+        ironOxygenTank2.setIngredient( 'n', Material.NETHERITE_SCRAP);
+        ironOxygenTank2.setIngredient( 'O', getIronOxygenTank(0, 300));
+        getServer().addRecipe(ironOxygenTank2);
+
+        ShapedRecipe ironOxygenTank3 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank_3"), getIronOxygenTank(0, 900));
+        ironOxygenTank3.shape("c#c","nOn","c#c");
+        ironOxygenTank3.setIngredient( '#', Material.TINTED_GLASS);
+        ironOxygenTank3.setIngredient( 'c', Material.COPPER_INGOT);
+        ironOxygenTank3.setIngredient( 'n', Material.NETHERITE_SCRAP);
+        ironOxygenTank3.setIngredient( 'O', getIronOxygenTank(0, 600));
+        getServer().addRecipe(ironOxygenTank3);
+
+        ShapedRecipe ironOxygenTank4 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank_4"), getIronOxygenTank(0, 1200));
+        ironOxygenTank4.shape("c#c","nOn","cnc");
+        ironOxygenTank4.setIngredient( '#', Material.TINTED_GLASS);
+        ironOxygenTank4.setIngredient( 'c', Material.COPPER_INGOT);
+        ironOxygenTank4.setIngredient( 'n', Material.NETHERITE_SCRAP);
+        ironOxygenTank4.setIngredient( 'O', getIronOxygenTank(0, 900));
+        getServer().addRecipe(ironOxygenTank4);
+
+        ShapedRecipe ironOxygenTank5 = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_tank_5"), getIronOxygenTank(0, 1500));
+        ironOxygenTank5.shape("cnc","nOn","cnc");
+        ironOxygenTank5.setIngredient( 'c', Material.COPPER_INGOT);
+        ironOxygenTank5.setIngredient( 'n', Material.NETHERITE_SCRAP);
+        ironOxygenTank5.setIngredient( 'O', getIronOxygenTank(0, 1200));
+        getServer().addRecipe(ironOxygenTank5);
+
+        ShapedRecipe copperOxygenGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "copper_oxygen_generator"), getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+        copperOxygenGenerator.shape("b%b","%B%","imi");
+        copperOxygenGenerator.setIngredient('b', Material.BLAZE_POWDER);
+        copperOxygenGenerator.setIngredient('%', Material.TINTED_GLASS);
+        copperOxygenGenerator.setIngredient('B', Material.BUCKET);
+        copperOxygenGenerator.setIngredient('i', Material.LIGHTNING_ROD);
+        copperOxygenGenerator.setIngredient('m', Material.PHANTOM_MEMBRANE);
+        getServer().addRecipe(copperOxygenGenerator);
 
         ShapedRecipe ironOxygenShieldGenerator = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_oxygen_shield_generator"), getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));
         ironOxygenShieldGenerator.shape("iei","eme","iei");
@@ -213,6 +244,36 @@ public class MehaniksSpaceItems {
         rocketNozzle.setIngredient('b', Material.BLAZE_POWDER);
         rocketNozzle.setIngredient('H', Material.HOPPER);
         getServer().addRecipe(rocketNozzle);
+
+        ShapedRecipe rocketControlPanel = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_control_panel"), getRocketConrolPanel());
+        rocketControlPanel.shape("i#i", "ivi", "zdz");
+        rocketControlPanel.setIngredient('i', Material.IRON_INGOT);
+        rocketControlPanel.setIngredient('#', Material.TINTED_GLASS);
+        rocketControlPanel.setIngredient('v', Material.HOPPER);
+        rocketControlPanel.setIngredient('z', Material.GOLD_INGOT);
+        rocketControlPanel.setIngredient('d', Material.DIAMOND);
+        getServer().addRecipe(rocketControlPanel);
+
+        ShapedRecipe flightControlPanel = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "flight_control_panel"), getFlightControlPanel());
+        flightControlPanel.shape("l#l", "isi", "aie");
+        flightControlPanel.setIngredient('l', Material.LIGHTNING_ROD);
+        flightControlPanel.setIngredient('i', Material.IRON_INGOT);
+        flightControlPanel.setIngredient('#', Material.TINTED_GLASS);
+        flightControlPanel.setIngredient('s', Material.ECHO_SHARD);
+        flightControlPanel.setIngredient('a', Material.AMETHYST_SHARD);
+        flightControlPanel.setIngredient('e', Material.EMERALD);
+        getServer().addRecipe(flightControlPanel);
+
+        ShapedRecipe modificationControlPanel = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "modification_control_panel"), getRocketModificationPanel());
+        modificationControlPanel.shape("die", "iTi", "kak");
+        modificationControlPanel.setIngredient('d', Material.DIAMOND);
+        modificationControlPanel.setIngredient('i', Material.IRON_INGOT);
+        modificationControlPanel.setIngredient('e', Material.EMERALD);
+        modificationControlPanel.setIngredient('T', Material.SMITHING_TABLE);
+        modificationControlPanel.setIngredient('k', Material.QUARTZ);
+        modificationControlPanel.setIngredient('a', Material.AMETHYST_SHARD);
+        getServer().addRecipe(modificationControlPanel);
+
     }
 
     public static ItemStack getIronSpaceSuitHelmet(Integer autoOxigenSpeed) {
@@ -287,7 +348,13 @@ public class MehaniksSpaceItems {
     public static ItemStack getIronOxygenTank(Integer i, Integer max) {
         ItemStack oxygenTank = new ItemStack(Material.CARROT_ON_A_STICK);
         ItemMeta oxygenTankMeta = oxygenTank.getItemMeta();
-        oxygenTankMeta.setCustomModelData(1001);
+
+        if (max <= 300) oxygenTankMeta.setCustomModelData(1001);
+        else if (max <= 600) oxygenTankMeta.setCustomModelData(1002);
+        else if (max <= 900) oxygenTankMeta.setCustomModelData(1003);
+        else if (max <= 1200) oxygenTankMeta.setCustomModelData(1004);
+        else oxygenTankMeta.setCustomModelData(1005);
+
         oxygenTankMeta.setDisplayName(ChatColor.GRAY + "Oxygen Tank");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.WHITE + "volume: " + i + "/" + max);
@@ -296,8 +363,8 @@ public class MehaniksSpaceItems {
         return oxygenTank;
     }
 
-    public static ItemStack getIronOxygenGenerator(ChatColor color, Integer oxygen, Integer copper) {
-        ItemStack oxygenGenerator = new ItemStack(Material.FIREWORK_STAR);
+    public static ItemStack getCopperOxygenGenerator(ChatColor color, Integer oxygen, Integer copper) {
+        ItemStack oxygenGenerator = new ItemStack(Material.COPPER_INGOT);
         ItemMeta oxygenGeneratorMeta = oxygenGenerator.getItemMeta();
         oxygenGeneratorMeta.setCustomModelData(1001);
         oxygenGeneratorMeta.setDisplayName(color + "Oxygen Generator " + oxygen + " " + copper);

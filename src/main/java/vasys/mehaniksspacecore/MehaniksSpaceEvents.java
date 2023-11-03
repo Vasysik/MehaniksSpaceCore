@@ -156,7 +156,7 @@ public class MehaniksSpaceEvents implements Listener {
     public void FrameEntity(EntityDamageByEntityEvent event) {
         if (event.getEntity().getType() == EntityType.GLOW_ITEM_FRAME) {
             ItemFrame itemFrame = (ItemFrame) event.getEntity();
-            // if (itemFrame.getItem().getType() == Material.FIREWORK_STAR &&
+            // if (itemFrame.getItem().getType() == Material.COPPER_INGOT &&
             //         itemFrame.getItem().getItemMeta().hasCustomModelData() &&
             //         itemFrame.getItem().getItemMeta().getCustomModelData() == 1001) {
             //     if (Integer.parseInt(itemFrame.getItem().getItemMeta().getDisplayName().split(" ")[2]) <= 0 &&
@@ -182,7 +182,7 @@ public class MehaniksSpaceEvents implements Listener {
             Player player = event.getPlayer();
             if (!player.getInventory().getItemInMainHand().isEmpty() &&
                     player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData()) {
-                if (player.getInventory().getItemInMainHand().getType() == Material.FIREWORK_STAR &&
+                if (player.getInventory().getItemInMainHand().getType() == Material.COPPER_INGOT &&
                         (player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 ||
                                 player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1002 ||
                                 player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1003 ||
@@ -239,7 +239,6 @@ public class MehaniksSpaceEvents implements Listener {
                 int maxOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
                 int maxStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[2]);
                 int currentOil = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(2).split(" ")[2]);
-                int currentStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(3).split(" ")[2]);
                 String endPoint = itemFrame.getItem().getItemMeta().getLore().get(4).split(" ")[2];
                 int needOil = Math.round((float) MehaniksSpaceFunctions.getDistance(itemFrame, endPoint) /100);
                 String worldName = MehaniksSpaceFunctions.getWorldName(itemFrame, endPoint);
@@ -263,7 +262,7 @@ public class MehaniksSpaceEvents implements Listener {
                     }
 
                     if (minecart != null) {
-                        minecart.getInventory().addItem(MehaniksSpaceItems.getRocket(maxOil, maxStorage, currentOil, currentStorage, "none"));
+                        minecart.getInventory().addItem(MehaniksSpaceItems.getRocket(maxOil, maxStorage, 0, 0, "none"));
 
                         Container barrel = null;
                         for (Entity nearbyE : itemFrame.getWorld().getNearbyEntities(itemFrame.getLocation(), 2, 2, 2)) {
