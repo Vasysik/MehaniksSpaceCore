@@ -181,7 +181,7 @@ public class MehaniksSpaceItems {
         ironOilGenerator.setIngredient('e', Material.QUARTZ);
         getServer().addRecipe(ironOilGenerator);
 
-        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 0, 0, null));
+        ShapedRecipe rocket = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket"), getRocket(2000, 0, 0, 0, "none"));
         rocket.shape("#n#","#t#","#z#");
         rocket.setIngredient('n', getRocketNose());
         rocket.setIngredient('t', getRocketFuelTank());

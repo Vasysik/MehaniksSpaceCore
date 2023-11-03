@@ -6,6 +6,8 @@ enabled: false
 # After setting the config, you can replace it with "true"
 useMultiverseCore: false
 # Does your server use the MultiverseCore plugin?
+defaultWorldBorderDistance: 1000
+# Default world board distance
 fuelItems:
   - brown_mushroom
   - red_mushroom

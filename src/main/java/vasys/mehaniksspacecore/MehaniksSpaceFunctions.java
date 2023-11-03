@@ -9,6 +9,7 @@ import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
@@ -39,7 +40,7 @@ public class MehaniksSpaceFunctions {
         player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
     }
 
-    public static ItemFrame inActiveOxygenShield(Player player) {
+    public static ItemFrame inActiveOxygenShield(Entity player) {
         ItemFrame oxigenShieldItemFrame = null;
         for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 100, 100, 100)) {
             if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
@@ -93,5 +94,35 @@ public class MehaniksSpaceFunctions {
             }
         }
         return worldName;
+    }
+
+
+    public static void oxigenTankData(Player player, ItemMeta spaceSuitChestplateMeta, List<String> loreOld) {
+        List<String> lore = new ArrayList<>();
+        int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
+        int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
+        int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
+        String tanksTypes = loreOld.get(2).split(" ")[2];
+
+        if (maxOxygen - oxygen >= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])) {
+            tanks -= 1;
+            maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
+
+            if (player.getInventory().firstEmpty() != -1) {
+                player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
+            } else {
+                player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
+            }
+            tanksTypes = "";
+            String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
+            for (int i = 0; i < tanksList.length - 1; i++) {
+                tanksTypes += tanksList[i];
+                if (i < tanksList.length - 2) {
+                    tanksTypes += "/";
+                }
+            }
+        }
+
+        MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
     }
 }

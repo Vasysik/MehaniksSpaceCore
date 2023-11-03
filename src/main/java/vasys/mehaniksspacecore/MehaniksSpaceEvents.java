@@ -2,17 +2,18 @@ package vasys.mehaniksspacecore;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 import org.bukkit.*;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Rabbit;
+import org.bukkit.block.Barrel;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
+import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -32,7 +34,7 @@ public class MehaniksSpaceEvents implements Listener {
     public void onWorldChange(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         if (MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
-            int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(0));
+            int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
             if (gravity != 0) {
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
@@ -240,20 +242,54 @@ public class MehaniksSpaceEvents implements Listener {
                 int currentStorage = Integer.parseInt(itemFrame.getItem().getItemMeta().getLore().get(3).split(" ")[2]);
                 String endPoint = itemFrame.getItem().getItemMeta().getLore().get(4).split(" ")[2];
                 int needOil = Math.round((float) MehaniksSpaceFunctions.getDistance(itemFrame, endPoint) /100);
+                String worldName = MehaniksSpaceFunctions.getWorldName(itemFrame, endPoint);
 
-                if (currentOil >= needOil) {
-                    itemFrame.setItem(ItemStack.empty());
+                if (currentOil >= needOil && !worldName.equals("")) {
                     Random random = new Random();
-                    World world = getPlugin(MehaniksSpaceCore.class).getServer().getWorld(MehaniksSpaceFunctions.getWorldName(itemFrame, endPoint));
-                    int rX = random.nextInt(2001) - 1000;
-                    int rZ = random.nextInt(2001) - 1000;
+                    World world = getPlugin(MehaniksSpaceCore.class).getServer().getWorld(worldName);
+
+                    int rX = random.nextInt(defaultWorldBorderDistance+1) - defaultWorldBorderDistance/2;
+                    int rZ = random.nextInt(defaultWorldBorderDistance+1) - defaultWorldBorderDistance/2;
                     getPlugin(MehaniksSpaceCore.class).getLogger().info(world.getName() + " " + rX + " " + rZ);
+                    Location location = new Location(world, rX, 319, rZ);
 
-                    //
-                    //
-                    //
+                    StorageMinecart minecart = null;
+                    player.getWorld().spawnEntity(player.getLocation(), EntityType.MINECART_CHEST);
 
-                    player.teleport(new Location(world, rX, 319, rZ));
+                    for (Entity nearbyEntity : player.getWorld().getNearbyEntities(player.getLocation(), 1, 1, 1)) {
+                        if (nearbyEntity.getType().equals(EntityType.MINECART_CHEST)) {
+                            minecart = (StorageMinecart) nearbyEntity;
+                        }
+                    }
+
+                    if (minecart != null) {
+                        minecart.getInventory().addItem(MehaniksSpaceItems.getRocket(maxOil, maxStorage, currentOil, currentStorage, "none"));
+
+                        Container barrel = null;
+                        for (Entity nearbyE : itemFrame.getWorld().getNearbyEntities(itemFrame.getLocation(), 2, 2, 2)) {
+                            if (nearbyE.getType() == EntityType.GLOW_ITEM_FRAME && nearbyE.getCustomName() != null) {
+                                ItemFrame nearbyItemFrame = (ItemFrame) nearbyE;
+                                if (nearbyItemFrame.getCustomName().equals("Rocket Conrol Panel")) {
+                                    BlockState block = nearbyItemFrame.getWorld().getBlockAt(nearbyItemFrame.getLocation().getBlockX(), nearbyItemFrame.getLocation().getBlockY() - 1, nearbyItemFrame.getLocation().getBlockZ()).getState();
+                                    if (block.getType() == Material.BARREL) barrel = (Container) block;
+                                }
+                            }
+                        }
+
+                        if (barrel != null && barrel.getInventory().getContents().length != 0) {
+                            for (ItemStack itemStack : barrel.getInventory().getContents()) {
+                                if (itemStack != null) {
+                                    minecart.getInventory().addItem(itemStack);
+                                    itemStack.setAmount(0);
+                                }
+                            }
+                        }
+                        minecart.teleport(location);
+                    }
+
+                    player.teleport(location);
+                    player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 1200, 1, true, false));
+                    itemFrame.remove();
                 }
             }
         }

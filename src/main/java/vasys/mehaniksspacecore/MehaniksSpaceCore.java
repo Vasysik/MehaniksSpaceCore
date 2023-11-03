@@ -1,9 +1,6 @@
 package vasys.mehaniksspacecore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -15,10 +12,7 @@ import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -39,6 +33,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
     static public String mainWorld = "world";
     static public int seed = 0;
+    static public int defaultWorldBorderDistance = 1000;
 
     @Override
     public void onEnable() {
@@ -49,6 +44,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         useMultiverseCore = config.getBoolean("useMultiverseCore");
         mainWorld = config.getString("mainWorld");
         seed = config.getInt("seed");
+        defaultWorldBorderDistance = config.getInt("defaultWorldBorderDistance");
         for (String string : config.getStringList("fuelItems")) {
             fuelItems.add(Material.getMaterial(string));
         }
@@ -58,7 +54,6 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             for (World w : getServer().getWorlds()) {
                 for (Player player : w.getPlayers()) {
                     if (MehaniksSpaceWorldMap.containsKey(w.getName())) {
-
                         int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
                         if (!player.hasPotionEffect(PotionEffectType.JUMP) && gravity != 0) {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
@@ -72,7 +67,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             int oil = Integer.parseInt(name.split(" ")[4]);
                             int maxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
                             int oilMaxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[4]);
-                            oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
+                            oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
                             if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
                                 player.removePotionEffect(PotionEffectType.POISON);
                                 player.removePotionEffect(PotionEffectType.CONFUSION);
@@ -84,32 +79,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             List<String> loreOld = spaceSuitChestplateMeta.getLore();
 
                             if (Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) > 0) {
-                                List<String> lore = new ArrayList<>();
-                                int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
-                                int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
-                                int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
-                                String tanksTypes = loreOld.get(2).split(" ")[2];
-
-                                if (maxOxygen - oxygen >= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])) {
-                                    tanks -= 1;
-                                    maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
-
-                                    if (player.getInventory().firstEmpty() != -1) {
-                                        player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
-                                    } else {
-                                        player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
-                                    }
-                                    tanksTypes = "";
-                                    String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
-                                    for (int i = 0; i < tanksList.length - 1; i++) {
-                                        tanksTypes += tanksList[i];
-                                        if (i < tanksList.length - 2) {
-                                            tanksTypes += "/";
-                                        }
-                                    }
-                                }
-
-                                MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
+                                MehaniksSpaceFunctions.oxigenTankData(player, spaceSuitChestplateMeta, loreOld);
 
                                 if (player.hasPotionEffect(PotionEffectType.POISON) && player.hasPotionEffect(PotionEffectType.CONFUSION)) {
                                     player.removePotionEffect(PotionEffectType.POISON);
@@ -152,32 +122,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                         List<String> loreOld = spaceSuitChestplateMeta.getLore();
 
                         if (Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) > 0) {
-                            List<String> lore = new ArrayList<>();
-                            int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
-                            int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]);
-                            int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2));
-                            String tanksTypes = loreOld.get(2).split(" ")[2];
-
-                            if (maxOxygen - oxygen >= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])) {
-                                tanks -= 1;
-                                maxOxygen -= Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1]);
-
-                                if (player.getInventory().firstEmpty() != -1) {
-                                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
-                                } else {
-                                    player.getWorld().dropItem(player.getLocation(), MehaniksSpaceItems.getIronOxygenTank(0, Integer.parseInt(loreOld.get(2).split(" ")[2].split("/")[loreOld.get(2).split(" ")[2].split("/").length - 1])));
-                                }
-                                tanksTypes = "";
-                                String[] tanksList = loreOld.get(2).split(" ")[2].split("/");
-                                for (int i = 0; i < tanksList.length - 1; i++) {
-                                    tanksTypes += tanksList[i];
-                                    if (i < tanksList.length - 2) {
-                                        tanksTypes += "/";
-                                    }
-                                }
-                            }
-
-                            MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
+                            MehaniksSpaceFunctions.oxigenTankData(player, spaceSuitChestplateMeta, loreOld);
                             player.addPotionEffect(new PotionEffect(PotionEffectType.WATER_BREATHING, 5, 1, true, false));
                         }
                     }
@@ -222,7 +167,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 oxygenS = 0;
                             }
 
-                            oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygenS, oil, maxR, oilMaxR));
+                            oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygenS, oil));
                         } else {
                             if (maxOxygen - oxygen >= autoOxigenSpeed) oxygen += autoOxigenSpeed;
                             else oxygen = maxOxygen;
@@ -236,6 +181,57 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 }
             }
         }, 20, 20);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (World world : getServer().getWorlds()) {
+                for (Entity entity : world.getEntities()) {
+                    if (entity.getType().isAlive() && MehaniksSpaceWorldMap.containsKey(world.getName())) {
+                        LivingEntity livingEntity = (LivingEntity) entity;
+
+                        int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(entity.getWorld().getName()).get(1));
+                        if (!livingEntity.hasPotionEffect(PotionEffectType.JUMP) && gravity != 0) {
+                            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, gravity - 1, true, false));
+                            livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
+                        }
+
+                        if (entity instanceof Animals || entity instanceof Ambient || entity instanceof WaterMob) {
+                            ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(entity);
+                            if (oxigenShieldItemFrame != null) {
+                                String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
+                                int oxygen = Integer.parseInt(name.split(" ")[3]) - 1;
+                                int oil = Integer.parseInt(name.split(" ")[4]);
+                                int maxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(0).split(" ")[2]);
+                                int oilMaxR = Integer.parseInt(oxigenShieldItemFrame.getItem().getItemMeta().getLore().get(1).split(" ")[4]);
+                                oxigenShieldItemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
+                                if (livingEntity.hasPotionEffect(PotionEffectType.POISON) && livingEntity.hasPotionEffect(PotionEffectType.CONFUSION)) {
+                                    livingEntity.removePotionEffect(PotionEffectType.POISON);
+                                    livingEntity.removePotionEffect(PotionEffectType.CONFUSION);
+                                    livingEntity.removePotionEffect(PotionEffectType.BLINDNESS);
+                                }
+                            } else {
+                                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.POISON, Integer.MAX_VALUE, 63, true, false));
+                                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, Integer.MAX_VALUE, 31, true, false));
+                                livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, Integer.MAX_VALUE, 0, true, false));
+                            }
+
+                            if (oxigenShieldItemFrame == null){
+                                int temperature = Integer.parseInt(MehaniksSpaceWorldMap.get(entity.getWorld().getName()).get(2));
+                                if (temperature != 0) {
+                                    if (temperature < 0 && !entity.isFreezeTickingLocked()) {
+                                        entity.lockFreezeTicks(true);
+                                        entity.setFreezeTicks(Math.abs(temperature) * 20);
+                                        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, Integer.MAX_VALUE, Math.abs(temperature) - 1, true, false));
+                                    }
+                                }
+                            } else if (entity.isFreezeTickingLocked()) {
+                                livingEntity.lockFreezeTicks(false);
+                                livingEntity.removePotionEffect(PotionEffectType.WITHER);
+                            }
+                        }
+                    }
+                }
+            }
+        }, 100, 100);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (World world : getServer().getWorlds()) {
@@ -357,7 +353,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                 oil += 120 * item.getAmount();
                                                 item.setAmount(0);
                                             }
-                                            itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
+                                            itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
                                         }
                                     }
                                 }
@@ -379,7 +375,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                         sphereL.subtract(x, y, z);
                                     }
                                 }
-                                itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, oxygen, oil, maxR, oilMaxR));
+                                itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
                             }
                         } else if (itemFrame.getName().equals("Oil Generator") &&
                                 itemFrame.getItem().getType() == Material.HONEYCOMB ) {
@@ -459,10 +455,10 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 if (block.getType() == Material.BARREL) {
                                     Container barrel = (Container) block;
 
+                                    currentStorage = 0;
                                     if (!barrel.getInventory().isEmpty()) {
                                         for (ItemStack itemStack : barrel.getInventory().getContents()) {
                                             if (itemStack != null) {
-                                                currentStorage = 0;
                                                 if (itemStack.getType() == Material.INK_SAC &&
                                                         itemStack.getItemMeta().hasCustomModelData() &&
                                                         itemStack.getItemMeta().getCustomModelData() == 1001) {
@@ -471,7 +467,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                     itemStack.setAmount(0);
 
                                                 } else {
-                                                    if (maxStorage <= currentStorage) {
+                                                    if (maxStorage < currentStorage + itemStack.getAmount() || Arrays.stream(barrel.getInventory().getContents()).filter(x -> x != null).toList().size() + 1 >= barrel.getInventory().getSize()) {
                                                         rocketControlPanel.getWorld().dropItem(rocketControlPanel.getLocation(), itemStack);
                                                         itemStack.setAmount(0);
                                                     } else currentStorage += itemStack.getAmount();
@@ -505,7 +501,6 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                                     if (sign.getLine(0).split(" ").length == 3 &&
                                             !endPoint.equals(sign.getLine(0).split(" ")[2])) endPoint = sign.getLine(0).split(" ")[2];
-
                                     int distance = MehaniksSpaceFunctions.getDistance(itemFrame, endPoint);
 
                                     sign.line(0, Component.text("End Point: " + endPoint));
@@ -571,6 +566,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 useMultiverseCore = config.getBoolean("useMultiverseCore");
                 mainWorld = config.getString("mainWorld");
                 seed = config.getInt("seed");
+                defaultWorldBorderDistance = config.getInt("defaultWorldBorderDistance");
                 for (String string : config.getStringList("fuelItems")) {
                     fuelItems.add(Material.getMaterial(string));
                 }
