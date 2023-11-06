@@ -44,7 +44,9 @@ public class MehaniksSpaceEvents implements Listener {
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW_FALLING);
             player.removePotionEffect(PotionEffectType.WITHER);
+            player.removePotionEffect(PotionEffectType.POISON);
             player.removePotionEffect(PotionEffectType.CONFUSION);
+            player.removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
 
@@ -63,7 +65,9 @@ public class MehaniksSpaceEvents implements Listener {
             player.removePotionEffect(PotionEffectType.JUMP);
             player.removePotionEffect(PotionEffectType.SLOW_FALLING);
             player.removePotionEffect(PotionEffectType.WITHER);
+            player.removePotionEffect(PotionEffectType.POISON);
             player.removePotionEffect(PotionEffectType.CONFUSION);
+            player.removePotionEffect(PotionEffectType.BLINDNESS);
         }
     }
 
@@ -72,7 +76,11 @@ public class MehaniksSpaceEvents implements Listener {
         Player player = event.getPlayer();
         if(player.getInventory().getItemInMainHand().getType() == Material.CARROT_ON_A_STICK &&
                 player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                (player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1002 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1003 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1004 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1005) &&
                 player.getInventory().getChestplate() != null && player.getInventory().getChestplate().getItemMeta().hasCustomModelData() &&
                 player.getInventory().getChestplate().getItemMeta().getCustomModelData() == 1001) {
             ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
@@ -138,7 +146,11 @@ public class MehaniksSpaceEvents implements Listener {
             }
         } else if(player.getInventory().getItemInMainHand().getType() == Material.CARROT_ON_A_STICK &&
                 player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                (player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1002 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1003 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1004 ||
+                        player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1005) &&
                 !player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0].equals("0")) {
 
             ItemMeta oxygenTankMeta = player.getInventory().getItemInMainHand().getItemMeta();

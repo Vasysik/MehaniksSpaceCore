@@ -226,6 +226,7 @@ public class MehaniksSpaceItems {
         rocketNose.setIngredient('%', Material.WAXED_COPPER_BLOCK);
         rocketNose.setIngredient('#', Material.IRON_BLOCK);
         rocketNose.setIngredient('-', Material.IRON_TRAPDOOR);
+        rocketNose.setIngredient('c', Material.COMPASS);
         getServer().addRecipe(rocketNose);
 
         ShapedRecipe rocketFuelTank = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "rocket_fuel_tank"), getRocketFuelTank());

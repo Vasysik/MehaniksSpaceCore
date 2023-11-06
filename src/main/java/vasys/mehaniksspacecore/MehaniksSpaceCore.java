@@ -2,8 +2,10 @@ package vasys.mehaniksspacecore;
 
 import java.util.*;
 
+import com.sun.source.tree.LambdaExpressionTree;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
@@ -238,6 +240,59 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 for (Entity entity : world.getEntities()) {
                     if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
                         ItemFrame itemFrame = (ItemFrame) entity;
+                        if (itemFrame.getName().equals("Oil Generator") &&
+                                itemFrame.getItem().getType() == Material.HONEYCOMB ) {
+                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
+                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
+                            int oil = Integer.parseInt(name.split(" ")[2]);
+                            int fuel = Integer.parseInt(name.split(" ")[3]);
+
+                            BlockState block = itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
+
+                            if (block.getType() == Material.BARREL) {
+                                Container barrel = (Container) block;
+
+                                for (ItemStack item : barrel.getInventory().getContents()) {
+                                    if (item != null && (fuelItems.contains(item.getType()) || item.getType().isEdible())) {
+                                        if (item.getType().isEdible()) fuel += item.getAmount() * 15;
+                                        fuel += item.getAmount() * 5;
+                                        item.setAmount(0);
+                                        itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+                                    }
+                                }
+
+                                if (fuel >= 5) {
+                                    fuel -= 5;
+                                    oil += 1;
+                                    if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
+                                    else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+
+                                    MehaniksSpaceFunctions.itemFrameRotate(itemFrame);
+                                }
+
+                                if (oil >= 35) {
+                                    oil -= 35;
+                                    barrel.getInventory().addItem(MehaniksSpaceItems.getOil());
+
+                                    if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
+                                    else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
+                                }
+                            } else {
+                                itemFrame.remove();
+                                itemFrame.getWorld().createExplosion(itemFrame, 1);
+                            }
+
+                        }
+                    }
+                }
+            }
+        }, 40, 40);
+
+        getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
+            for (World world : getServer().getWorlds()) {
+                for (Entity entity : world.getEntities()) {
+                    if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
+                        ItemFrame itemFrame = (ItemFrame) entity;
                         if (itemFrame.getName().equals("Oxygen Generator") &&
                                 itemFrame.getItem().getType() == Material.COPPER_INGOT) {
                             if (itemFrame.isVisible()) itemFrame.setVisible(false);
@@ -380,48 +435,6 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 if (oxygen <= 0 || oil <= 0) itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, maxR, oilMaxR, oxygen, oil));
                                 else itemFrame.setItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.BLUE, maxR, oilMaxR, oxygen, oil));
                             }
-                        } else if (itemFrame.getName().equals("Oil Generator") &&
-                                itemFrame.getItem().getType() == Material.HONEYCOMB ) {
-                            if (itemFrame.isVisible()) itemFrame.setVisible(false);
-                            String name = itemFrame.getItem().getItemMeta().getDisplayName();
-                            int oil = Integer.parseInt(name.split(" ")[2]);
-                            int fuel = Integer.parseInt(name.split(" ")[3]);
-
-                            BlockState block = itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState();
-                            
-                            if (block.getType() == Material.BARREL) {
-                                Container barrel = (Container) block;
-
-                                for (ItemStack item : barrel.getInventory().getContents()) {
-                                    if (item != null && (fuelItems.contains(item.getType()) || item.getType().isEdible())) {
-                                        if (item.getType().isEdible()) fuel += item.getAmount() * 15;
-                                        fuel += item.getAmount() * 5;
-                                        item.setAmount(0);
-                                        itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
-                                    }
-                                }
-
-                                if (fuel >= 5) {
-                                    fuel -= 5;
-                                    oil += 1;
-                                    if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
-                                    else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
-
-                                    MehaniksSpaceFunctions.itemFrameRotate(itemFrame);
-                                }
-
-                                if (oil >= 50) {
-                                    oil -= 50;
-                                    barrel.getInventory().addItem(MehaniksSpaceItems.getOil());
-
-                                    if (oil == 0 || fuel == 0) itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.GRAY, oil, fuel));
-                                    else itemFrame.setItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.BLACK, oil, fuel));
-                                }
-                            } else {
-                                itemFrame.remove();
-                                itemFrame.getWorld().createExplosion(itemFrame, 1);
-                            }
-
                         } else if (itemFrame.getName().equals("Rocket") &&
                                 itemFrame.getItem().getType() == Material.NETHERITE_SCRAP &&
                                 itemFrame.getWorld().getBlockAt(itemFrame.getLocation().getBlockX(), itemFrame.getLocation().getBlockY() - 1, itemFrame.getLocation().getBlockZ()).getState().getType() == Material.LODESTONE) {
@@ -465,7 +478,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                 if (itemStack.getType() == Material.INK_SAC &&
                                                         itemStack.getItemMeta().hasCustomModelData() &&
                                                         itemStack.getItemMeta().getCustomModelData() == 1001) {
-                                                    if  (Math.round((float) MehaniksSpaceFunctions.getDistance(itemFrame, endPoint) /100) < currentOil + itemStack.getAmount()) {
+                                                    if  (Math.round((float) MehaniksSpaceFunctions.getDistance(itemFrame, endPoint)/100) > currentOil) {
                                                         currentOil += itemStack.getAmount();
                                                         itemStack.setAmount(0);
                                                     }
