@@ -1,19 +1,28 @@
 package vasys.mehaniksspacecore;
 
+import static org.bukkit.plugin.java.JavaPlugin.*;
+import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.*;
-import org.bukkit.block.Barrel;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
-import org.bukkit.entity.*;
+import org.bukkit.block.data.Ageable;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -21,13 +30,10 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
 
 public class MehaniksSpaceEvents implements Listener {
     @EventHandler
@@ -301,6 +307,24 @@ public class MehaniksSpaceEvents implements Listener {
                     player.teleport(location);
                     player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 1200, 1, true, false));
                     itemFrame.remove();
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        if (MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
+            int temperature = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(2));
+            int pressure = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(4));
+            if (320 - player.getY() * pressure >= 12000 || MehaniksSpaceFunctions.inActiveOxygenShield(event.getBlock().getLocation()) == null) {
+                if (event.getBlock().getType().equals(Material.GRASS_BLOCK)) event.getBlock().setType(Material.DIRT);
+                if (event.getBlock().getType().equals(Material.DIRT_PATH)) event.getBlock().setType(Material.DIRT);
+                if (event.getBlock() instanceof Ageable) event.getBlock().setType(Material.DEAD_BUSH);
+                if (event.getBlock().getType().equals(Material.WATER)) {
+                    if (temperature < 0) event.getBlock().setType(Material.BLUE_ICE);
+                    if (temperature > 0) event.getBlock().setType(Material.AIR);
                 }
             }
         }

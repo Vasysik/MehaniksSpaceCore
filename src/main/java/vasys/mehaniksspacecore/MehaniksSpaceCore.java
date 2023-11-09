@@ -1,11 +1,17 @@
 package vasys.mehaniksspacecore;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
-import com.sun.source.tree.LambdaExpressionTree;
-import net.kyori.adventure.text.Component;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.ChatColor;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
@@ -14,13 +20,22 @@ import org.bukkit.block.sign.SignSide;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ambient;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.WaterMob;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import net.kyori.adventure.text.Component;
 
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
@@ -62,7 +77,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                             player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, Integer.MAX_VALUE, (gravity / 3) - 1, true, false));
                         }
 
-                        ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
+                        ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player.getLocation());
                         if (oxigenShieldItemFrame != null) {
                             String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
                             int oxygen = Integer.parseInt(name.split(" ")[3]) - 1;
@@ -135,7 +150,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (World w : getServer().getWorlds()) {
                 for (Player player : w.getPlayers()) {
-                    ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player);
+                    ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(player.getLocation());
                     if ((!MehaniksSpaceWorldMap.containsKey(w.getName()) || oxigenShieldItemFrame != null) &&
                             !player.getWorld().getBlockAt(player.getLocation()).getType().equals(Material.WATER) &&
                             player.getInventory().getHelmet() != null && player.getInventory().getChestplate() != null &&
@@ -197,7 +212,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                         }
 
                         if (entity instanceof Animals || entity instanceof Ambient || entity instanceof WaterMob) {
-                            ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(entity);
+                            ItemFrame oxigenShieldItemFrame = MehaniksSpaceFunctions.inActiveOxygenShield(entity.getLocation());
                             if (oxigenShieldItemFrame != null) {
                                 String name = oxigenShieldItemFrame.getItem().getItemMeta().getDisplayName();
                                 int oxygen = Integer.parseInt(name.split(" ")[3]) - 1;

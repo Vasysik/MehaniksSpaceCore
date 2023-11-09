@@ -1,6 +1,12 @@
 package vasys.mehaniksspacecore;
 
+import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
 import org.bukkit.entity.Entity;
@@ -8,12 +14,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
-import static vasys.mehaniksspacecore.MehaniksSpaceCore.MehaniksSpaceWorldMap;
 
 public class MehaniksSpaceFunctions {
     public static void itemFrameRotate(ItemFrame itemFrame) {
@@ -40,11 +40,11 @@ public class MehaniksSpaceFunctions {
         player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
     }
 
-    public static ItemFrame inActiveOxygenShield(Entity player) {
+    public static ItemFrame inActiveOxygenShield(Location location) {
         ItemFrame oxigenShieldItemFrame = null;
-        for (Entity entity : player.getWorld().getNearbyEntities(player.getLocation(), 100, 100, 100)) {
+        for (Entity entity : location.getWorld().getNearbyEntities(location, 100, 100, 100)) {
             if (entity.getType() == EntityType.GLOW_ITEM_FRAME) {
-                double distance = entity.getLocation().distance(player.getLocation());
+                double distance = entity.getLocation().distance(location);
                 ItemFrame itemFrame = (ItemFrame) entity;
                 if (itemFrame.getItem().getType() == Material.MAGMA_CREAM &&
                         itemFrame.getItem().getItemMeta().hasCustomModelData() &&
