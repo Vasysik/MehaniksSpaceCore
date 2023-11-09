@@ -15,6 +15,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.type.Sapling;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -319,9 +320,10 @@ public class MehaniksSpaceEvents implements Listener {
             int temperature = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(2));
             int liquidWaterY = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(4));
             if (liquidWaterY <= event.getBlock().getLocation().getY() || MehaniksSpaceFunctions.inActiveOxygenShield(event.getBlock().getLocation()) == null) {
+                if (event.getBlock() instanceof Sapling) event.getBlock().setType(Material.DEAD_BUSH);
                 if (event.getBlock().getType().equals(Material.GRASS_BLOCK)) event.getBlock().setType(Material.DIRT);
                 if (event.getBlock().getType().equals(Material.DIRT_PATH)) event.getBlock().setType(Material.DIRT);
-                if (event.getBlock() instanceof Ageable) event.getBlock().setType(Material.DEAD_BUSH);
+                if (event.getBlock() instanceof Ageable) event.getBlock().setType(Material.AIR);
                 if (event.getBlock().getType().equals(Material.WATER)) {
                     if (temperature < 0) event.getBlock().setType(Material.BLUE_ICE);
                     if (temperature > 0) event.getBlock().setType(Material.AIR);
