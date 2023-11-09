@@ -317,8 +317,8 @@ public class MehaniksSpaceEvents implements Listener {
         Player player = event.getPlayer();
         if (MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
             int temperature = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(2));
-            int pressure = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(4));
-            if (320 - player.getY() * pressure >= 12000 || MehaniksSpaceFunctions.inActiveOxygenShield(event.getBlock().getLocation()) == null) {
+            int liquidWaterY = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(4));
+            if (liquidWaterY <= player.getY() || MehaniksSpaceFunctions.inActiveOxygenShield(event.getBlock().getLocation()) == null) {
                 if (event.getBlock().getType().equals(Material.GRASS_BLOCK)) event.getBlock().setType(Material.DIRT);
                 if (event.getBlock().getType().equals(Material.DIRT_PATH)) event.getBlock().setType(Material.DIRT);
                 if (event.getBlock() instanceof Ageable) event.getBlock().setType(Material.DEAD_BUSH);
