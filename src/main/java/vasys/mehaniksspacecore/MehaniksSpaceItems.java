@@ -278,7 +278,7 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getIronSpaceSuitHelmet(Integer level) {
-        Integer autoOxigenSpeed = (level - 2)*2;
+        Integer autoOxigenSpeed = (level - 1)*2;
         ItemStack spaceSuitHelmet = new ItemStack(Material.IRON_HELMET);
         ArmorMeta spaceSuitHelmetMeta = (ArmorMeta) spaceSuitHelmet.getItemMeta();
 
@@ -297,7 +297,11 @@ public class MehaniksSpaceItems {
     }
 
 
-    public static ItemStack getIronSpaceSuitChestplate(Integer max) {
+    public static ItemStack getIronSpaceSuitChestplate(Integer level) {
+        Integer max = 0;
+        if (level == 1) max = 1;
+        else max = (level - 1)*2;
+
         ItemStack spaceSuitChestplate = new ItemStack(Material.IRON_CHESTPLATE);
         ArmorMeta spaceSuitChestplateMeta = (ArmorMeta) spaceSuitChestplate.getItemMeta();
 
