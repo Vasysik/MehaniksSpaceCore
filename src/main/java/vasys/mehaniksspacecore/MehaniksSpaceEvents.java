@@ -35,6 +35,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
+
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 
 public class MehaniksSpaceEvents implements Listener {
     @EventHandler
@@ -337,5 +340,17 @@ public class MehaniksSpaceEvents implements Listener {
         Player player = event.getPlayer();
         player.setGravity(true);
         player.lockFreezeTicks(false);
+    }
+
+    @EventHandler
+    public void onPlayerJump(PlayerJumpEvent event) {
+        Player player = event.getPlayer();
+        if ((player.isSneaking() || !player.isOnGround()) &&
+        player.getInventory().getLeggings() == null &&
+        player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
+        player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001 &&
+        Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]) > 0) {
+            player.setVelocity(new Vector(0, 1, 0));
+        }
     }
 }

@@ -325,13 +325,14 @@ public class MehaniksSpaceItems {
         return spaceSuitChestplate;
     }
 
-    public static ItemStack getIronSpaceSuitLeggins(Boolean jetPack, Integer jetPackStrength) {
+    public static ItemStack getIronSpaceSuitLeggins(Integer level) {
+        Integer maxJetPackFuel = (level - 1)*5;
         ItemStack spaceSuitLeggins = new ItemStack(Material.IRON_LEGGINGS);
         ArmorMeta spaceSuitLegginsMeta = (ArmorMeta) spaceSuitLeggins.getItemMeta();
 
-        if (jetPackStrength < 2) {
+        if (maxJetPackFuel < 5) {
             spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.QUARTZ, TrimPattern.SILENCE));
-        } else if (jetPackStrength < 6) {
+        } else if (maxJetPackFuel < 15) {
             spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
         } else {
             spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.SILENCE));
@@ -340,6 +341,9 @@ public class MehaniksSpaceItems {
         spaceSuitLegginsMeta.setCustomModelData(1001);
         spaceSuitLegginsMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
         spaceSuitLegginsMeta.setDisplayName(ChatColor.GRAY + "Space Suit Leggins");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "■".repeat(10) + ChatColor.WHITE + "] 0/" + maxJetPackFuel);
+        spaceSuitLeggins.setLore(lore);
         spaceSuitLeggins.setItemMeta(spaceSuitLegginsMeta);
         return spaceSuitLeggins;
     }
@@ -367,7 +371,7 @@ public class MehaniksSpaceItems {
 
         oxygenTankMeta.setDisplayName(ChatColor.GRAY + "Oxygen Tank");
         List<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE + "volume: " + i + "/" + max);
+        lore.add(ChatColor.WHITE + "Volume: " + i + "/" + max);
         oxygenTankMeta.setLore(lore);
         oxygenTank.setItemMeta(oxygenTankMeta);
         return oxygenTank;
