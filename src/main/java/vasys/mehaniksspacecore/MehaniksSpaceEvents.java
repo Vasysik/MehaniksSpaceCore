@@ -106,12 +106,12 @@ public class MehaniksSpaceEvents implements Listener {
                 int addOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0]);
                 int addMaxOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[1]);
                 player.getInventory().setItemInMainHand(null);
-                List<String> lore = new ArrayList<>();
+                
                 int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) + 1;
                 int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) + addOxygen;
                 int maxOxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[1]) + addMaxOxygen;
 
-                MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
+                MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
                 player.playSound(player, Sound.BLOCK_IRON_DOOR_CLOSE, 0.5f, 1f);
             }
         }
@@ -350,6 +350,10 @@ public class MehaniksSpaceEvents implements Listener {
         player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
         player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001 &&
         Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]) > 0) {
+            ItemStack leggins = player.getInventory().getLeggings();
+            int fuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]);
+            int maxFuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[1])
+            MehaniksSpaceFunctions.spaceSuitLegginsData(player, leggins.getItemMeta(),leggins.getLore(), fuel, maxFuel);
             player.setVelocity(new Vector(0, 1, 0));
         }
     }

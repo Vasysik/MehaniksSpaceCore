@@ -26,18 +26,32 @@ public class MehaniksSpaceFunctions {
         else if (itemFrame.getRotation() == Rotation.COUNTER_CLOCKWISE) itemFrame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
         else itemFrame.setRotation(Rotation.NONE);
     }
-    public static void spaceSuitChestplateData(Player player, ItemMeta spaceSuitChestplateMeta, List<String> loreOld, List<String> lore, int oxygen, int maxOxygen, int tanks, String tanksTypes) {
+    public static void spaceSuitChestplateData(Player player, ItemMeta spaceSuitChestplateMeta, List<String> loreOld, int oxygen, int maxOxygen, int tanks, String tanksTypes) {
         String oxygenBar = "";
         int oxPercent = Math.round((float) (oxygen * 10) / maxOxygen);
         oxygenBar += ChatColor.BLUE + "■".repeat(oxPercent);
         int noOxPercent = 12 - oxygenBar.length();
         oxygenBar += ChatColor.DARK_GRAY + "■".repeat(noOxPercent);
 
+        List<String> lore = new ArrayList<>();
         lore.add(ChatColor.WHITE + "" + tanks + "/" + loreOld.get(0).split(" ")[0].split("/")[1] + " oxygen tanks");
         lore.add(ChatColor.WHITE + "[" + ChatColor.BLUE + "" + oxygenBar + "" + ChatColor.WHITE + "] " + oxygen + "/" + maxOxygen);
         lore.add(ChatColor.DARK_GRAY + "Tanks types: " + tanksTypes);
         spaceSuitChestplateMeta.setLore(lore);
         player.getInventory().getChestplate().setItemMeta(spaceSuitChestplateMeta);
+    }
+
+    public static void spaceSuitLegginsData(Player player, ItemMeta spaceSuitLegginsMeta, List<String> loreOld, int fuel, int maxFuel) {
+        String fuelBar = "";
+        int fuelPercent = Math.round((float) (fuel * 10) / fuel);
+        fuelBar += ChatColor.BLUE + "■".repeat(fuelPercent);
+        int noFuelPercent = 12 - fuelBar.length();
+        fuelBar += ChatColor.DARK_GRAY + "■".repeat(noFuelPercent);
+
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.WHITE + "[" + ChatColor.GOLD + "" + fuelBar + "" + ChatColor.WHITE + "] " + fuel + "/" + maxFuel);
+        spaceSuitLegginsMeta.setLore(lore);
+        player.getInventory().getChestplate().setItemMeta(spaceSuitLegginsMeta);
     }
 
     public static ItemFrame inActiveOxygenShield(Location location) {
@@ -123,6 +137,6 @@ public class MehaniksSpaceFunctions {
             }
         }
 
-        MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, lore, oxygen, maxOxygen, tanks, tanksTypes);
+        MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
     }
 }

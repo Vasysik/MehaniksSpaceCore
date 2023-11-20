@@ -132,7 +132,7 @@ public class MehaniksSpaceItems {
 
 
 
-        ShapedRecipe ironSpaceSuitLeggins = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_leggings"), getIronSpaceSuitLeggins(false, 0));
+        ShapedRecipe ironSpaceSuitLeggins = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_leggings"), getIronSpaceSuitLeggins(1));
         ironSpaceSuitLeggins.shape("m%m","*A*","m%m");
         ironSpaceSuitLeggins.setIngredient('*', Material.COPPER_INGOT);
         ironSpaceSuitLeggins.setIngredient('%', Material.IRON_BLOCK);
