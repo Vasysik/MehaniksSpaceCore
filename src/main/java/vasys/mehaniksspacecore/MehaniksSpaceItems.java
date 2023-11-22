@@ -8,6 +8,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
@@ -298,20 +299,16 @@ public class MehaniksSpaceItems {
 
 
     public static ItemStack getIronSpaceSuitChestplate(Integer level) {
-        Integer max = 0;
+        int max = 0;
         if (level == 1) max = 1;
         else max = (level - 1)*2;
 
         ItemStack spaceSuitChestplate = new ItemStack(Material.IRON_CHESTPLATE);
         ArmorMeta spaceSuitChestplateMeta = (ArmorMeta) spaceSuitChestplate.getItemMeta();
 
-        if (max < 4) {
-            spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.QUARTZ, TrimPattern.SILENCE));
-        } else if (max < 8) {
-            spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
-        } else {
-            spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.SILENCE));
-        }
+        if (level < 2) spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.QUARTZ, TrimPattern.SILENCE));
+        else if (max < 4) spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
+        else spaceSuitChestplateMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.SILENCE));
 
         spaceSuitChestplateMeta.setCustomModelData(1001);
         spaceSuitChestplateMeta.addItemFlags(ItemFlag.HIDE_ARMOR_TRIM);
@@ -326,13 +323,13 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getIronSpaceSuitLeggins(Integer level) {
-        Integer maxJetPackFuel = (level - 1)*5;
+        int maxJetPackFuel = (level - 1)*50;
         ItemStack spaceSuitLeggins = new ItemStack(Material.IRON_LEGGINGS);
         ArmorMeta spaceSuitLegginsMeta = (ArmorMeta) spaceSuitLeggins.getItemMeta();
 
-        if (maxJetPackFuel < 5) {
+        if (level < 2) {
             spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.QUARTZ, TrimPattern.SILENCE));
-        } else if (maxJetPackFuel < 15) {
+        } else if (level < 4) {
             spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.IRON, TrimPattern.SILENCE));
         } else {
             spaceSuitLegginsMeta.setTrim(new ArmorTrim(TrimMaterial.NETHERITE, TrimPattern.SILENCE));
@@ -487,6 +484,20 @@ public class MehaniksSpaceItems {
         rocketModificationPanelMeta.setDisplayName(ChatColor.DARK_GRAY + "Rocket Modification Panel");
         rocketModificationPanel.setItemMeta(rocketModificationPanelMeta);
         return rocketModificationPanel;
+    }
+
+    public static ItemStack getCopperBattery(Integer i, Integer max) {
+        ItemStack copperBattery = new ItemStack(Material.COPPER_INGOT);
+        ItemMeta copperBatteryMeta = copperBattery.getItemMeta();
+
+        copperBatteryMeta.setCustomModelData(1001);
+
+        copperBatteryMeta.setDisplayName(ChatColor.GOLD + "Copper Battery");
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.WHITE + "Charge: " + i + "/" + max);
+        copperBatteryMeta.setLore(lore);
+        copperBattery.setItemMeta(copperBatteryMeta);
+        return copperBattery;
     }
 
 }

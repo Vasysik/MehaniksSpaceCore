@@ -352,7 +352,7 @@ public class MehaniksSpaceEvents implements Listener {
         Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]) > 0) {
             ItemStack leggins = player.getInventory().getLeggings();
             int fuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]);
-            int maxFuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[1])
+            int maxFuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[1]);
             MehaniksSpaceFunctions.spaceSuitLegginsData(player, leggins.getItemMeta(),leggins.getLore(), fuel, maxFuel);
             player.setVelocity(new Vector(0, 1, 0));
         }

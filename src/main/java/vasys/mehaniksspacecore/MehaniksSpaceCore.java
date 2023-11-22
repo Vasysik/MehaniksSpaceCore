@@ -605,14 +605,9 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 return true;
             }
             if (args[0].equals("getitems")) {
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(0));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(1));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins(1));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(300, 300));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNose());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketFuelTank());
@@ -626,6 +621,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             if (args[0].equals("chestplate")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
             if (args[0].equals("tank")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
             if (args[0].equals("helmet")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(Integer.parseInt(args[1])));
+            if (args[0].equals("leggins")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins(Integer.parseInt(args[1])));
             if (args[0].equals("shield")) {
                 int oxygen;
                 int oil;
@@ -636,6 +632,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, Integer.parseInt(args[1]), Integer.parseInt(args[2]), oxygen, oil));
             }
             if (args[0].equals("rocket")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), args[5]));
+            if (args[0].equals("battery")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getCopperBattery(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
             sender.sendMessage(ChatColor.RED + "ms !null");
             return false;
         }
