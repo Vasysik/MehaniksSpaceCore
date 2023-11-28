@@ -336,8 +336,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                 } else if (barrel.getInventory().contains(Material.CARROT_ON_A_STICK)) {
                                     for (ItemStack item : barrel.getInventory().getContents()) {
                                         if (item != null && item.getType() == Material.CARROT_ON_A_STICK &&
-                                                item.getItemMeta().hasCustomModelData() &&
-                                                item.getItemMeta().getCustomModelData() == 1001) {
+                                                item.getItemMeta().hasCustomModelData()) {
                                             ItemMeta itemMeta = item.getItemMeta();
                                             String name = itemFrame.getItem().getItemMeta().getDisplayName();
                                             List<String> loreOld = itemMeta.getLore();
@@ -403,7 +402,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                         for (ItemStack item : container.getInventory().getContents()) {
                                             if (item != null &&
                                                     item.getType().equals(Material.CARROT_ON_A_STICK) &&
-                                                    item.getItemMeta().getCustomModelData() == 1001) {
+                                                    item.getItemMeta().hasCustomModelData() &&
+                                                    item.getItemMeta().getCustomModelData() / 1000 == 1) {
 
                                                 ItemMeta itemMeta = item.getItemMeta();
                                                 List<String> loreOld = itemMeta.getLore();
