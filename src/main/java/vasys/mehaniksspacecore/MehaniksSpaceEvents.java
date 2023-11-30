@@ -114,6 +114,13 @@ public class MehaniksSpaceEvents implements Listener {
                 MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
                 player.playSound(player, Sound.BLOCK_IRON_DOOR_CLOSE, 0.5f, 1f);
             }
+        } else if(player.getInventory().getItemInMainHand().getType() == Material.COPPER_INGOT &&
+                player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
+                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001) {
+            ItemMeta spaceSuitLegginsMeta = player.getInventory().getChestplate().getItemMeta();
+            List<String> loreOld = spaceSuitLegginsMeta.getLore();
+
+
         }
     }
 
@@ -345,7 +352,7 @@ public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onPlayerJump(PlayerJumpEvent event) {
         Player player = event.getPlayer();
-        if ((player.isSneaking() || !player.isOnGround()) &&
+        if (!player.isOnGround() &&
         player.getInventory().getLeggings() == null &&
         player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
         player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001 &&
