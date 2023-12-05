@@ -51,7 +51,7 @@ public class MehaniksSpaceFunctions {
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.WHITE + "[" + ChatColor.GOLD + "" + fuelBar + "" + ChatColor.WHITE + "] " + fuel + "/" + maxFuel);
         spaceSuitLegginsMeta.setLore(lore);
-        player.getInventory().getChestplate().setItemMeta(spaceSuitLegginsMeta);
+        player.getInventory().getLeggings().setItemMeta(spaceSuitLegginsMeta);
     }
 
     public static ItemFrame inActiveOxygenShield(Location location) {

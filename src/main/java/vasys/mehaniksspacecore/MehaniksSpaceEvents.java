@@ -7,30 +7,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.type.Sapling;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerToggleSneakEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -63,6 +52,9 @@ public class MehaniksSpaceEvents implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        player.setAllowFlight(player.getInventory().getLeggings() != null &&
+                player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
+                player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001);
         if (MehaniksSpaceWorldMap.containsKey(player.getWorld().getName())) {
             int gravity = Integer.parseInt(MehaniksSpaceWorldMap.get(player.getWorld().getName()).get(1));
             if (gravity != 0) {
@@ -96,15 +88,18 @@ public class MehaniksSpaceEvents implements Listener {
             ItemMeta spaceSuitChestplateMeta = player.getInventory().getChestplate().getItemMeta();
             List<String> loreOld = spaceSuitChestplateMeta.getLore();
 
-            if (Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[1]) > Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) && !player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0].equals("0")) {
+            ItemMeta tankMeta = player.getInventory().getItemInMainHand().getItemMeta();
+            List<String> tankLore = tankMeta.getLore();
+
+            int addOxygen = Integer.parseInt(tankLore.get(0).split(" ")[1].split("/")[0]);
+            int addMaxOxygen = Integer.parseInt(tankLore.get(0).split(" ")[1].split("/")[1]);
+
+            if (Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[1]) > Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) && addOxygen != 0) {
                 String tanksTypes = "";
                 if (loreOld.get(2).split(" ").length > 2) {
                     tanksTypes = loreOld.get(2).split(" ")[2] + "/";
                 }
                 tanksTypes += player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[1];
-
-                int addOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[0]);
-                int addMaxOxygen = Integer.parseInt(player.getInventory().getItemInMainHand().getItemMeta().getLore().get(0).split(" ")[1].split("/")[1]);
                 player.getInventory().setItemInMainHand(null);
                 
                 int tanks = Integer.parseInt(loreOld.get(0).split(" ")[0].split("/")[0].substring(2)) + 1;
@@ -114,13 +109,28 @@ public class MehaniksSpaceEvents implements Listener {
                 MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
                 player.playSound(player, Sound.BLOCK_IRON_DOOR_CLOSE, 0.5f, 1f);
             }
-        } else if(player.getInventory().getItemInMainHand().getType() == Material.COPPER_INGOT &&
+        } else if(player.getInventory().getItemInMainHand().getType() == Material.WARPED_FUNGUS_ON_A_STICK &&
                 player.getInventory().getItemInMainHand().getItemMeta().hasCustomModelData() &&
-                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001) {
-            ItemMeta spaceSuitLegginsMeta = player.getInventory().getChestplate().getItemMeta();
+                player.getInventory().getItemInMainHand().getItemMeta().getCustomModelData() == 1001 &&
+                player.getInventory().getLeggings() != null && player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
+                player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001) {
+            ItemMeta spaceSuitLegginsMeta = player.getInventory().getLeggings().getItemMeta();
             List<String> loreOld = spaceSuitLegginsMeta.getLore();
+            ItemMeta batteryMeta = player.getInventory().getItemInMainHand().getItemMeta();
+            List<String> batteryLore = batteryMeta.getLore();
 
+            int fuel = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[0]);
+            int maxFuel = Integer.parseInt(loreOld.get(0).split(" ")[1].split("/")[1]);
+            int addFuel = Integer.parseInt(batteryLore.get(0).split(" ")[1].split("/")[0]);
+            int nAddFuel = addFuel;
+            int maxAddFuel = Integer.parseInt(batteryLore.get(0).split(" ")[1].split("/")[1]);
+            if (maxFuel == fuel) nAddFuel = 0;
+            else if (maxFuel - fuel < nAddFuel) nAddFuel = maxFuel - fuel;
 
+            if (fuel < maxFuel && nAddFuel > 0) {
+                player.getInventory().setItemInMainHand(MehaniksSpaceItems.getCopperBattery(addFuel - nAddFuel, maxAddFuel));
+                MehaniksSpaceFunctions.spaceSuitLegginsData(player, spaceSuitLegginsMeta, loreOld, fuel + nAddFuel, maxFuel);
+            }
         }
     }
 
@@ -347,21 +357,5 @@ public class MehaniksSpaceEvents implements Listener {
         Player player = event.getPlayer();
         player.setGravity(true);
         player.lockFreezeTicks(false);
-    }
-
-    @EventHandler
-    public void onPlayerJump(PlayerJumpEvent event) {
-        Player player = event.getPlayer();
-        if (!player.isOnGround() &&
-        player.getInventory().getLeggings() == null &&
-        player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
-        player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001 &&
-        Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]) > 0) {
-            ItemStack leggins = player.getInventory().getLeggings();
-            int fuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]);
-            int maxFuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[1]);
-            MehaniksSpaceFunctions.spaceSuitLegginsData(player, leggins.getItemMeta(),leggins.getLore(), fuel, maxFuel);
-            player.setVelocity(new Vector(0, 1, 0));
-        }
     }
 }

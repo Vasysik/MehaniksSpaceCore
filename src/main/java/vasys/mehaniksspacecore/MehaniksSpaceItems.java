@@ -340,7 +340,7 @@ public class MehaniksSpaceItems {
         spaceSuitLegginsMeta.setDisplayName(ChatColor.GRAY + "Space Suit Leggins");
         List<String> lore = new ArrayList<>();
         lore.add(ChatColor.WHITE + "[" + ChatColor.DARK_GRAY + "■".repeat(10) + ChatColor.WHITE + "] 0/" + maxJetPackFuel);
-        spaceSuitLeggins.setLore(lore);
+        spaceSuitLegginsMeta.setLore(lore);
         spaceSuitLeggins.setItemMeta(spaceSuitLegginsMeta);
         return spaceSuitLeggins;
     }
@@ -487,7 +487,7 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getCopperBattery(Integer i, Integer max) {
-        ItemStack copperBattery = new ItemStack(Material.COPPER_INGOT);
+        ItemStack copperBattery = new ItemStack(Material.WARPED_FUNGUS_ON_A_STICK);
         ItemMeta copperBatteryMeta = copperBattery.getItemMeta();
 
         copperBatteryMeta.setCustomModelData(1001);

@@ -5,13 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
@@ -36,6 +30,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.util.Vector;
 
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
@@ -66,7 +61,6 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             fuelItems.add(Material.getMaterial(string));
         }
         MehaniksSpaceItems.addRecipes();
-
         getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             for (World w : getServer().getWorlds()) {
                 for (Player player : w.getPlayers()) {
@@ -195,6 +189,20 @@ public final class MehaniksSpaceCore extends JavaPlugin {
 
                         MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
                     }
+
+                    if (!player.getGameMode().equals(GameMode.CREATIVE) && player.getInventory().getLeggings() != null &&
+                            player.getInventory().getLeggings().getItemMeta().hasCustomModelData() &&
+                            player.getInventory().getLeggings().getItemMeta().getCustomModelData() == 1001 &&
+                            Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]) > 0) {
+                        if (!player.getAllowFlight()) player.setAllowFlight(true);
+                        else {
+                            ItemStack leggins = player.getInventory().getLeggings();
+                            int fuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[0]);
+                            int maxFuel = Integer.parseInt(player.getInventory().getLeggings().getLore().get(0).split(" ")[1].split("/")[1]);
+                            if (fuel > 0)
+                                MehaniksSpaceFunctions.spaceSuitLegginsData(player, leggins.getItemMeta(), leggins.getLore(), fuel - 10, maxFuel);
+                        }
+                    } else player.setAllowFlight(false);
                 }
             }
         }, 20, 20);
@@ -404,7 +412,6 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                                                     item.getType().equals(Material.CARROT_ON_A_STICK) &&
                                                     item.getItemMeta().hasCustomModelData() &&
                                                     item.getItemMeta().getCustomModelData() / 1000 == 1) {
-
                                                 ItemMeta itemMeta = item.getItemMeta();
                                                 List<String> loreOld = itemMeta.getLore();
                                                 List<String> lore = new ArrayList<>();
