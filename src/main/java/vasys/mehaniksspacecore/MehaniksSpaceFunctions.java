@@ -2,18 +2,23 @@ package vasys.mehaniksspacecore;
 
 import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Rotation;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.profile.PlayerTextures;
 
 public class MehaniksSpaceFunctions {
     public static void itemFrameRotate(ItemFrame itemFrame) {
@@ -110,7 +115,6 @@ public class MehaniksSpaceFunctions {
         return worldName;
     }
 
-
     public static void oxigenTankData(Player player, ItemMeta spaceSuitChestplateMeta, List<String> loreOld) {
         List<String> lore = new ArrayList<>();
         int oxygen = Integer.parseInt(loreOld.get(1).split(" ")[1].split("/")[0]) - 1;
@@ -138,5 +142,16 @@ public class MehaniksSpaceFunctions {
         }
 
         MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
+    }
+
+    public static ItemStack createHead(URL url, String name){
+        UUID uuid = UUID.randomUUID();
+        PlayerProfile profile = Bukkit.createProfile(uuid, name);
+        PlayerTextures texture = profile.getTextures();
+        texture.setSkin(url);
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
+        skullMeta.setPlayerProfile(profile);
+        return head;
     }
 }
