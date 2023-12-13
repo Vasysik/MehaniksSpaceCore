@@ -603,7 +603,7 @@ public class MehaniksSpaceItems {
         return nasturan;
     }
 
-    public static ItemStack getMeteorite(String ore) throws MalformedURLException {
+    public static ItemStack getMeteorite(String ore) {
         if (!meteorites.containsKey(ore)) ore = "meteoric_iron";
         return MehaniksSpaceFunctions.createHead(ore, (String) meteorites.get(ore).get(1));
     }

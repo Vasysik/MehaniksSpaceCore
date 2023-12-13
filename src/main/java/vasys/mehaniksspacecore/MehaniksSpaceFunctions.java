@@ -10,11 +10,12 @@ import java.util.UUID;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import io.papermc.paper.math.BlockPosition;
 import org.bukkit.*;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Skull;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -153,5 +154,13 @@ public class MehaniksSpaceFunctions {
         skullMeta.setPlayerProfile(profile);
         head.setItemMeta(skullMeta);
         return head;
+    }
+
+    public static void summonMeteor(Location location, String name, boolean isMeteor, float power) {
+        World world = location.getWorld();
+        FallingBlock fallingBlock = world.spawnFallingBlock(location, Material.MAGMA_BLOCK.createBlockData());
+        fallingBlock.setInvulnerable(true);
+        fallingBlock.setDropItem(false);
+        fallingBlock.setCustomName(name + " " + isMeteor + " " + power);
     }
 }

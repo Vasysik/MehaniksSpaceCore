@@ -100,47 +100,59 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 sender.sendMessage(ChatColor.GREEN + "MehaniksSpaceCore plugin successfully reloaded");
                 return true;
             }
-            if (args[0].equals("getitems")) {
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getOil());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNose());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketFuelTank());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketNozzle());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(2000, 0, 0, 0, "none"));
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketConrolPanel());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getFlightControlPanel());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocketModificationPanel());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getLithium());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawLithium());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getMeteoricIron());
-                try { getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getMeteorite("meteoric_iron"));} catch (MalformedURLException e) {throw new RuntimeException(e);}
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getNasturan());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getTitanium());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawTitanium());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawMeteoricIron());
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawNasturan());
+            Player player = getServer().getPlayer(sender.getName());
+            if (player != null) {
+                if (args[0].equals("getitems")) {
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
+                    player.getInventory().addItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
+                    player.getInventory().addItem(MehaniksSpaceItems.getOil());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocketNose());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocketFuelTank());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocketNozzle());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocket(2000, 0, 0, 0, "none"));
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocketConrolPanel());
+                    player.getInventory().addItem(MehaniksSpaceItems.getFlightControlPanel());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocketModificationPanel());
+                    player.getInventory().addItem(MehaniksSpaceItems.getLithium());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRawLithium());
+                    player.getInventory().addItem(MehaniksSpaceItems.getMeteoricIron());
+                    player.getInventory().addItem(MehaniksSpaceItems.getMeteorite("meteoric_iron"));
+                    player.getInventory().addItem(MehaniksSpaceItems.getNasturan());
+                    player.getInventory().addItem(MehaniksSpaceItems.getTitanium());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRawTitanium());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRawMeteoricIron());
+                    player.getInventory().addItem(MehaniksSpaceItems.getRawNasturan());
+                    return true;
+                }
+                if (args[0].equals("chestplate"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
+                if (args[0].equals("tank"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
+                if (args[0].equals("helmet"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(Integer.parseInt(args[1])));
+                if (args[0].equals("leggins"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins(Integer.parseInt(args[1])));
+                if (args[0].equals("shield")) {
+                    int oxygen;
+                    int oil;
+                    if (args[3].equalsIgnoreCase("inf")) oxygen = Integer.MAX_VALUE;
+                    else oxygen = Integer.parseInt(args[3]);
+                    if (args[4].equalsIgnoreCase("inf")) oil = Integer.MAX_VALUE;
+                    else oil = Integer.parseInt(args[4]);
+                    player.getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, Integer.parseInt(args[1]), Integer.parseInt(args[2]), oxygen, oil));
+                }
+                if (args[0].equals("rocket"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getRocket(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), args[5]));
+                if (args[0].equals("battery"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getCopperBattery(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
+                if (args[0].equals("meteorite"))
+                    player.getInventory().addItem(MehaniksSpaceItems.getMeteorite(args[1]));
+                if (args[0].equals("meteor"))
+                    MehaniksSpaceFunctions.summonMeteor(new Location(player.getWorld(), player.getX(), player.getWorld().getMaxHeight(), player.getZ()), args[1], true, Float.parseFloat(args[2]));
                 return true;
             }
-            if (args[0].equals("chestplate")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
-            if (args[0].equals("tank")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenTank(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
-            if (args[0].equals("helmet")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitHelmet(Integer.parseInt(args[1])));
-            if (args[0].equals("leggins")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitLeggins(Integer.parseInt(args[1])));
-            if (args[0].equals("shield")) {
-                int oxygen;
-                int oil;
-                if (args[3].equalsIgnoreCase("inf")) oxygen = Integer.MAX_VALUE;
-                else oxygen = Integer.parseInt(args[3]);
-                if (args[4].equalsIgnoreCase("inf")) oil = Integer.MAX_VALUE;
-                else oil = Integer.parseInt(args[4]);
-                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, Integer.parseInt(args[1]), Integer.parseInt(args[2]), oxygen, oil));
-            }
-            if (args[0].equals("rocket")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRocket(Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), args[5]));
-            if (args[0].equals("battery")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getCopperBattery(Integer.parseInt(args[1]), Integer.parseInt(args[2])));
-            if (args[0].equals("meteorite")) try { getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getMeteorite(args[1]));} catch (MalformedURLException e) {throw new RuntimeException(e);}
             sender.sendMessage(ChatColor.RED + "ms !null");
-            return true;
         }
         return false;
     }

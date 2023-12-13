@@ -1,12 +1,16 @@
 package vasys.mehaniksspacecore;
 
+import static org.bukkit.Bukkit.getServer;
 import static org.bukkit.plugin.java.JavaPlugin.*;
 import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -20,11 +24,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
@@ -381,6 +387,30 @@ public class MehaniksSpaceEvents implements Listener {
             block.setType(Material.AIR);
             block.getWorld().createExplosion(block.getLocation().toCenterLocation(), (Float) meteorite.get(4));
             block.getWorld().dropItem(block.getLocation().toCenterLocation(), drop);
+        }
+    }
+
+    @EventHandler()
+    public void EntityChangeBlockEvent (EntityChangeBlockEvent event) {
+        if (event.getEntityType() == EntityType.FALLING_BLOCK) {
+            Entity entity = event.getEntity();
+            String[] prop = entity.getName().split(" ");
+            if (prop.length == 3 && MehaniksSpaceItems.meteorites.containsKey(prop[0]) || prop[0].equals("none")) {
+                if (Boolean.parseBoolean(prop[1])) {
+                    if (Float.parseFloat(prop[2]) > 0) entity.getWorld().createExplosion(entity.getLocation(), Float.parseFloat(prop[2]), true);
+                    if (!prop[0].equals("none")) MehaniksSpaceFunctions.summonMeteor(entity.getLocation(), prop[0], false, 0);
+                } else if (!prop[0].equals("none")) {
+                    UUID uuid = UUID.randomUUID();
+                    PlayerProfile profile = Bukkit.createProfile(uuid, prop[0]);
+                    profile.setProperty(new ProfileProperty("textures", (String) MehaniksSpaceItems.meteorites.get(prop[0]).get(1)));
+                    Block block = event.getBlock();
+                    block.setType(Material.PLAYER_HEAD);
+                    Skull skull = (Skull) block.getState();
+                    skull.setPlayerProfile(profile);
+                    skull.update();
+                }
+                event.setCancelled(true);
+            }
         }
     }
 
