@@ -144,14 +144,14 @@ public class MehaniksSpaceFunctions {
         MehaniksSpaceFunctions.spaceSuitChestplateData(player, spaceSuitChestplateMeta, loreOld, oxygen, maxOxygen, tanks, tanksTypes);
     }
 
-    public static ItemStack createHead(URL url, String name){
+    public static ItemStack createHead(String name, String value){
         UUID uuid = UUID.randomUUID();
         PlayerProfile profile = Bukkit.createProfile(uuid, name);
-        PlayerTextures texture = profile.getTextures();
-        texture.setSkin(url);
+        profile.setProperty(new ProfileProperty("textures", value));
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
         skullMeta.setPlayerProfile(profile);
+        head.setItemMeta(skullMeta);
         return head;
     }
 }

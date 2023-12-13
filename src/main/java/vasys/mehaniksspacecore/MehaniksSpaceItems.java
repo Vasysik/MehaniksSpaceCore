@@ -20,8 +20,11 @@ import org.bukkit.inventory.meta.trim.TrimPattern;
 
 public class MehaniksSpaceItems {
     public static List<Integer> itemModelDatalList = new ArrayList<Integer>();
-    public static HashMap<String, ItemStack> meteorites = new HashMap<>();
-    public static List<Object> lithiumMeteorite = new ArrayList<>();
+    public static HashMap<String, List<Object>> meteorites = new HashMap<>();
+    public static List<Object> lithiumProperties = new ArrayList<>();
+    public static List<Object> meteoricIronProperties = new ArrayList<>();
+    public static List<Object> titaniumProperties = new ArrayList<>();
+    public static List<Object> nasturanProperties = new ArrayList<>();
 
     public static void addRecipes() {
         itemModelDatalList.add(1001);
@@ -29,16 +32,42 @@ public class MehaniksSpaceItems {
         itemModelDatalList.add(1003);
         itemModelDatalList.add(1004);
 
-        meteorites.put("lithium", getRawLithium());
-        meteorites.put("meteoric_iron", getMeteoricIron());
-        meteorites.put("titanium", getRawTitanium());
-        meteorites.put("nasturan", getNasturan());
+        lithiumProperties.add(getRawLithium());
+        lithiumProperties.add("ewogICJ0aW1lc3RhbXAiIDogMTcwMjQ2NzQwMjUxMywKICAicHJvZmlsZUlkIiA6ICI3YzJhNDBmZjVhNTA0MjBkYjQzMWZlMDJjN2VlNDA1MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJWYXN5cyIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84ZjJhZGY2MzdkN2ZmYjJjZmM5NDU5YTg2Yjg1OWRiODY1ZDAwMTQwMjNiNTIwYmRlNWQ5MzkwNjkyOWM2YWQ5IgogICAgfQogIH0KfQ==");
+        lithiumProperties.add(3);
+        lithiumProperties.add(8);
+        lithiumProperties.add(0.5f);
+        meteorites.put("lithium", lithiumProperties);
+        meteoricIronProperties.add(getRawMeteoricIron());
+        meteoricIronProperties.add("ewogICJ0aW1lc3RhbXAiIDogMTcwMjQ2NzgxNDY4MSwKICAicHJvZmlsZUlkIiA6ICI3YzJhNDBmZjVhNTA0MjBkYjQzMWZlMDJjN2VlNDA1MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJWYXN5cyIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS8yMmM5YWVkYWJmYTVhNDI3ZGM0MjJjMDA4ZjI3MDQ1NTE3ZDcxYzFmMmVkZjE1Mjg5ZmMzMGZiZmE0YTRhNzhmIgogICAgfQogIH0KfQ==");
+        meteoricIronProperties.add(3);
+        meteoricIronProperties.add(8);
+        meteoricIronProperties.add(0.1f);
+        meteorites.put("meteoric_iron", meteoricIronProperties);
+        titaniumProperties.add(getRawTitanium());
+        titaniumProperties.add("ewogICJ0aW1lc3RhbXAiIDogMTcwMjQ2NzkxOTMzOSwKICAicHJvZmlsZUlkIiA6ICI3YzJhNDBmZjVhNTA0MjBkYjQzMWZlMDJjN2VlNDA1MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJWYXN5cyIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84OGUyZDJmNjUxYWE1MTk1YzBhMDA3MDczODk5NTY5OTFiM2VjZTY5Yjk5NTM1NWEyZTQxYjE0YmE5YTU2ZDEiCiAgICB9CiAgfQp9");
+        titaniumProperties.add(3);
+        titaniumProperties.add(8);
+        titaniumProperties.add(0.1f);
+        meteorites.put("titanium", titaniumProperties);
+        nasturanProperties.add(getRawNasturan());
+        nasturanProperties.add("ewogICJ0aW1lc3RhbXAiIDogMTcwMjQ2Nzg4ODQxNSwKICAicHJvZmlsZUlkIiA6ICI3YzJhNDBmZjVhNTA0MjBkYjQzMWZlMDJjN2VlNDA1MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJWYXN5cyIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS9jN2FlYzA1ODhjMDI5ODFhMDZmOTMyOThmMGJiY2FjZjA4MmI2YzQ1MzQzNTM0MGZiNjA1MDEyYzEwM2UzYTNhIgogICAgfQogIH0KfQ==");
+        nasturanProperties.add(3);
+        nasturanProperties.add(8);
+        nasturanProperties.add(1f);
+        meteorites.put("nasturan", nasturanProperties);
 
-        FurnaceRecipe lithium = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "lithium"), getLithium(), (RecipeChoice) getRawLithium(), 2, 400);
+        FurnaceRecipe lithium = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "lithium"), getLithium(), new RecipeChoice.ExactChoice(getRawLithium()), 1.5f, 250);
         getServer().addRecipe(lithium);
 
-        FurnaceRecipe titanium = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "titanium"), getTitanium(), (RecipeChoice) getRawTitanium(), 1, 200);
+        FurnaceRecipe meteoric_iron = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "meteoric_iron"), getMeteoricIron(), new RecipeChoice.ExactChoice(getRawMeteoricIron()), 1, 250);
+        getServer().addRecipe(meteoric_iron);
+
+        FurnaceRecipe titanium = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "titanium"), getTitanium(), new RecipeChoice.ExactChoice(getRawTitanium()), 1.5f, 300);
         getServer().addRecipe(titanium);
+
+        FurnaceRecipe nasturan = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "nasturan"), getNasturan(), new RecipeChoice.ExactChoice(getRawNasturan()), 2, 400);
+        getServer().addRecipe(nasturan);
 
         ShapedRecipe ironSpaceSuitHelmet = new ShapedRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "iron_space_suit_helmet"), getIronSpaceSuitHelmet(1));
         ironSpaceSuitHelmet.shape("*%*","%A%","mTm");
@@ -505,10 +534,10 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getRawLithium() {
-        ItemStack rawLithium = new ItemStack(Material.BLAZE_POWDER);
+        ItemStack rawLithium = new ItemStack(Material.FLINT);
         ItemMeta rawLithiumMeta = rawLithium.getItemMeta();
         rawLithiumMeta.setCustomModelData(1001);
-        rawLithiumMeta.setDisplayName("Raw lithium");
+        rawLithiumMeta.setDisplayName("Raw Lithium");
         rawLithium.setItemMeta(rawLithiumMeta);
         return rawLithium;
     }
@@ -521,8 +550,17 @@ public class MehaniksSpaceItems {
         return lithium;
     }
 
+    public static ItemStack getRawMeteoricIron() {
+        ItemStack rawMeteoricIron = new ItemStack(Material.FLINT);
+        ItemMeta rawMeteoricIronMeta = rawMeteoricIron.getItemMeta();
+        rawMeteoricIronMeta.setCustomModelData(1002);
+        rawMeteoricIronMeta.setDisplayName("Raw Meteoric Iron");
+        rawMeteoricIron.setItemMeta(rawMeteoricIronMeta);
+        return rawMeteoricIron;
+    }
+
     public static ItemStack getMeteoricIron() {
-        ItemStack meteoricIron = new ItemStack(Material.RAW_IRON);
+        ItemStack meteoricIron = new ItemStack(Material.GOLD_INGOT);
         ItemMeta meteoricIronMeta = meteoricIron.getItemMeta();
         meteoricIronMeta.setCustomModelData(1001);
         meteoricIronMeta.setDisplayName("Meteoric Iron");
@@ -531,10 +569,10 @@ public class MehaniksSpaceItems {
     }
 
     public static ItemStack getRawTitanium() {
-        ItemStack rawTitanium = new ItemStack(Material.RAW_IRON);
+        ItemStack rawTitanium = new ItemStack(Material.FLINT);
         ItemMeta rawTitaniumMeta = rawTitanium.getItemMeta();
-        rawTitaniumMeta.setCustomModelData(1002);
-        rawTitaniumMeta.setDisplayName("Raw titanium");
+        rawTitaniumMeta.setCustomModelData(1003);
+        rawTitaniumMeta.setDisplayName("Raw Titanium");
         rawTitanium.setItemMeta(rawTitaniumMeta);
         return rawTitanium;
     }
@@ -547,8 +585,17 @@ public class MehaniksSpaceItems {
         return titanium;
     }
 
+    public static ItemStack getRawNasturan() {
+        ItemStack rawNasturan = new ItemStack(Material.FLINT);
+        ItemMeta rawNasturanMeta = rawNasturan.getItemMeta();
+        rawNasturanMeta.setCustomModelData(1004);
+        rawNasturanMeta.setDisplayName("Raw Nasturan");
+        rawNasturan.setItemMeta(rawNasturanMeta);
+        return rawNasturan;
+    }
+
     public static ItemStack getNasturan() {
-        ItemStack nasturan = new ItemStack(Material.EMERALD);
+        ItemStack nasturan = new ItemStack(Material.ECHO_SHARD);
         ItemMeta nasturanMeta = nasturan.getItemMeta();
         nasturanMeta.setCustomModelData(1001);
         nasturanMeta.setDisplayName("Nasturan");
@@ -558,7 +605,7 @@ public class MehaniksSpaceItems {
 
     public static ItemStack getMeteorite(String ore) throws MalformedURLException {
         if (!meteorites.containsKey(ore)) ore = "meteoric_iron";
-        return MehaniksSpaceFunctions.createHead(new URL("http://m.vasys.ru/res/heads/" + ore + ".png"), ore);
+        return MehaniksSpaceFunctions.createHead(ore, (String) meteorites.get(ore).get(1));
     }
 
 }

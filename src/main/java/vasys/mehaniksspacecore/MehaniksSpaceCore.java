@@ -119,6 +119,8 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getNasturan());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getTitanium());
                 getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawTitanium());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawMeteoricIron());
+                getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getRawNasturan());
                 return true;
             }
             if (args[0].equals("chestplate")) getServer().getPlayer(sender.getName()).getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitChestplate(Integer.parseInt(args[1])));
