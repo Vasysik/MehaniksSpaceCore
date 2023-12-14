@@ -18,19 +18,51 @@ import org.bukkit.inventory.meta.trim.ArmorTrim;
 import org.bukkit.inventory.meta.trim.TrimMaterial;
 import org.bukkit.inventory.meta.trim.TrimPattern;
 
-public class MehaniksSpaceItems {
-    public static List<Integer> itemModelDatalList = new ArrayList<Integer>();
+public class MehaniksSpaceItems { 
+    public static List<Integer> itemModelDataList = new ArrayList<>();
+    public static HashMap<String, ItemStack> customItems = new HashMap<>();
     public static HashMap<String, List<Object>> meteorites = new HashMap<>();
     public static List<Object> lithiumProperties = new ArrayList<>();
     public static List<Object> meteoricIronProperties = new ArrayList<>();
     public static List<Object> titaniumProperties = new ArrayList<>();
     public static List<Object> nasturanProperties = new ArrayList<>();
 
-    public static void addRecipes() {
-        itemModelDatalList.add(1001);
-        itemModelDatalList.add(1002);
-        itemModelDatalList.add(1003);
-        itemModelDatalList.add(1004);
+    public static void addCustomItems() {
+        itemModelDataList.add(1001);
+        itemModelDataList.add(1002);
+        itemModelDataList.add(1003);
+        itemModelDataList.add(1004);
+
+        customItems.put("iron_space_suit_helmet", getIronSpaceSuitHelmet(1));
+        customItems.put("iron_space_suit_chestplate", getIronSpaceSuitChestplate(1));
+        customItems.put("iron_space_suit_leggings", getIronSpaceSuitLeggins(1));
+        customItems.put("iron_space_suit_boots", getIronSpaceSuitBoots());        
+        customItems.put("iron_oxygen_tank", getIronOxygenTank(0, 300));
+
+        customItems.put("copper_oxygen_generator", getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
+        customItems.put("iron_oxygen_shield_generator", getIronOxygenShieldGenerator(ChatColor.DARK_GRAY, 10, 360, 0, 0));
+        customItems.put("iron_oil_generator", getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
+
+        customItems.put("rocket", getRocket(2000, 0, 0, 0, "none"));
+        customItems.put("rocket_nose", getRocketNose());
+        customItems.put("rocket_fuel_tank", getRocketFuelTank());
+        customItems.put("rocket_nozzle", getRocketNozzle());
+        customItems.put("rocket_control_panel", getRocketConrolPanel());
+        customItems.put("flight_control_panel", getFlightControlPanel());
+        customItems.put("modification_control_panel", getRocketModificationPanel());
+
+        customItems.put("oil", getOil());
+        customItems.put("raw_lithium", getRawLithium());
+        customItems.put("lithium", getLithium());
+        customItems.put("raw_meteoric_iron", getRawMeteoricIron());
+        customItems.put("meteoric_iron", getMeteoricIron());
+        customItems.put("raw_titanium", getRawTitanium());
+        customItems.put("titanium", getTitanium());
+        customItems.put("raw_nasturan", getRawNasturan());
+        customItems.put("nasturan", getNasturan());
+        customItems.put("meteorite", getMeteorite("meteoric_iron"));        
+
+        customItems.put("copper_battery", getCopperBattery(300, 300));
 
         lithiumProperties.add(getRawLithium());
         lithiumProperties.add("ewogICJ0aW1lc3RhbXAiIDogMTcwMjQ2NzQwMjUxMywKICAicHJvZmlsZUlkIiA6ICI3YzJhNDBmZjVhNTA0MjBkYjQzMWZlMDJjN2VlNDA1MyIsCiAgInByb2ZpbGVOYW1lIiA6ICJWYXN5cyIsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84ZjJhZGY2MzdkN2ZmYjJjZmM5NDU5YTg2Yjg1OWRiODY1ZDAwMTQwMjNiNTIwYmRlNWQ5MzkwNjkyOWM2YWQ5IgogICAgfQogIH0KfQ==");
@@ -56,7 +88,9 @@ public class MehaniksSpaceItems {
         nasturanProperties.add(8);
         nasturanProperties.add(1f);
         meteorites.put("nasturan", nasturanProperties);
+    }
 
+    public static void addRecipes() {
         FurnaceRecipe lithium = new FurnaceRecipe(new NamespacedKey(MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class), "lithium"), getLithium(), new RecipeChoice.ExactChoice(getRawLithium()), 1.5f, 250);
         getServer().addRecipe(lithium);
 
@@ -330,7 +364,6 @@ public class MehaniksSpaceItems {
         return spaceSuitHelmet;
     }
 
-
     public static ItemStack getIronSpaceSuitChestplate(Integer level) {
         int max = 0;
         if (level == 1) max = 1;
@@ -541,6 +574,7 @@ public class MehaniksSpaceItems {
         rawLithium.setItemMeta(rawLithiumMeta);
         return rawLithium;
     }
+
     public static ItemStack getLithium() {
         ItemStack lithium = new ItemStack(Material.BLAZE_POWDER);
         ItemMeta lithiumMeta = lithium.getItemMeta();
@@ -576,6 +610,7 @@ public class MehaniksSpaceItems {
         rawTitanium.setItemMeta(rawTitaniumMeta);
         return rawTitanium;
     }
+    
     public static ItemStack getTitanium() {
         ItemStack titanium = new ItemStack(Material.IRON_INGOT);
         ItemMeta titaniumMeta = titanium.getItemMeta();

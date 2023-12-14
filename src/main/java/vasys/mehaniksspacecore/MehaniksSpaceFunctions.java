@@ -156,10 +156,9 @@ public class MehaniksSpaceFunctions {
         return head;
     }
 
-    public static void summonMeteor(Location location, String name, boolean isMeteor, float power) {
+    public static void summonMeteor(Location location, String name, boolean isMeteor, float power, Material material) {
         World world = location.getWorld();
-        FallingBlock fallingBlock = world.spawnFallingBlock(location, Material.MAGMA_BLOCK.createBlockData());
-        fallingBlock.setInvulnerable(true);
+        FallingBlock fallingBlock = world.spawnFallingBlock(location, material.createBlockData());
         fallingBlock.setDropItem(false);
         fallingBlock.setCustomName(name + " " + isMeteor + " " + power);
     }

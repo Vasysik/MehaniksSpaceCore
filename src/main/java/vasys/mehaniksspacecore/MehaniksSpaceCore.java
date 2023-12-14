@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.*;
 import org.bukkit.block.BlockState;
@@ -103,26 +104,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
             Player player = getServer().getPlayer(sender.getName());
             if (player != null) {
                 if (args[0].equals("getitems")) {
-                    player.getInventory().addItem(MehaniksSpaceItems.getIronSpaceSuitBoots());
-                    player.getInventory().addItem(MehaniksSpaceItems.getCopperOxygenGenerator(ChatColor.DARK_GRAY, 0, 0));
-                    player.getInventory().addItem(MehaniksSpaceItems.getIronOilGenerator(ChatColor.DARK_GRAY, 0, 0));
-                    player.getInventory().addItem(MehaniksSpaceItems.getOil());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRocketNose());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRocketFuelTank());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRocketNozzle());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRocket(2000, 0, 0, 0, "none"));
-                    player.getInventory().addItem(MehaniksSpaceItems.getRocketConrolPanel());
-                    player.getInventory().addItem(MehaniksSpaceItems.getFlightControlPanel());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRocketModificationPanel());
-                    player.getInventory().addItem(MehaniksSpaceItems.getLithium());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRawLithium());
-                    player.getInventory().addItem(MehaniksSpaceItems.getMeteoricIron());
-                    player.getInventory().addItem(MehaniksSpaceItems.getMeteorite("meteoric_iron"));
-                    player.getInventory().addItem(MehaniksSpaceItems.getNasturan());
-                    player.getInventory().addItem(MehaniksSpaceItems.getTitanium());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRawTitanium());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRawMeteoricIron());
-                    player.getInventory().addItem(MehaniksSpaceItems.getRawNasturan());
+                    for (Map.Entry<String, ItemStack> entry : MehaniksSpaceItems.customItems.entrySet()) player.getInventory().addItem(entry.getValue());
                     return true;
                 }
                 if (args[0].equals("chestplate"))
@@ -149,7 +131,7 @@ public final class MehaniksSpaceCore extends JavaPlugin {
                 if (args[0].equals("meteorite"))
                     player.getInventory().addItem(MehaniksSpaceItems.getMeteorite(args[1]));
                 if (args[0].equals("meteor"))
-                    MehaniksSpaceFunctions.summonMeteor(new Location(player.getWorld(), player.getX(), player.getWorld().getMaxHeight(), player.getZ()), args[1], true, Float.parseFloat(args[2]));
+                    MehaniksSpaceFunctions.summonMeteor(new Location(player.getWorld(), player.getX(), player.getWorld().getMaxHeight(), player.getZ()), args[1], true, Float.parseFloat(args[2]), Material.MAGMA_BLOCK);
                 return true;
             }
             sender.sendMessage(ChatColor.RED + "ms !null");

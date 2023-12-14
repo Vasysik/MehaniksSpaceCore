@@ -398,7 +398,7 @@ public class MehaniksSpaceEvents implements Listener {
             if (prop.length == 3 && MehaniksSpaceItems.meteorites.containsKey(prop[0]) || prop[0].equals("none")) {
                 if (Boolean.parseBoolean(prop[1])) {
                     if (Float.parseFloat(prop[2]) > 0) entity.getWorld().createExplosion(entity.getLocation(), Float.parseFloat(prop[2]), true);
-                    if (!prop[0].equals("none")) MehaniksSpaceFunctions.summonMeteor(entity.getLocation(), prop[0], false, 0);
+                    if (!prop[0].equals("none")) MehaniksSpaceFunctions.summonMeteor(entity.getLocation(), prop[0], false, 0, Material.BARRIER);
                 } else if (!prop[0].equals("none")) {
                     UUID uuid = UUID.randomUUID();
                     PlayerProfile profile = Bukkit.createProfile(uuid, prop[0]);
