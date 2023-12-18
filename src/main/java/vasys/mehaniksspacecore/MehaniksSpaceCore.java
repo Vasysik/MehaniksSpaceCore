@@ -1,44 +1,27 @@
 package vasys.mehaniksspacecore;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.*;
-import org.bukkit.block.BlockState;
-import org.bukkit.block.Container;
-import org.bukkit.block.Sign;
-import org.bukkit.block.sign.Side;
-import org.bukkit.block.sign.SignSide;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Ambient;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.WaterMob;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
-import net.kyori.adventure.text.Component;
-import org.bukkit.util.Vector;
 
 public final class MehaniksSpaceCore extends JavaPlugin {
     public static List<String> MehaniksSpaceList = new ArrayList<String>();
 
     public static HashMap<String, List<String>> MehaniksSpaceWorldMap = new HashMap<>();
     public static List<String> MehaniksSpaceWorldMapKeys = new ArrayList<>();
+    
+    public static HashMap<String, List<Object>> MeteorWorldMap = new HashMap<>();
 
     public static List<Material> fuelItems = new ArrayList<Material>();
     FileConfiguration config = this.getConfig();

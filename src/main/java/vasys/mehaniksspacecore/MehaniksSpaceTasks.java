@@ -1,13 +1,34 @@
 package vasys.mehaniksspacecore;
 
-import net.kyori.adventure.text.Component;
-import org.bukkit.*;
+import static org.bukkit.Bukkit.*;
+import static vasys.mehaniksspacecore.MehaniksSpaceCore.*;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.DyeColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
 import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Ambient;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.WaterMob;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,16 +36,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.bukkit.Bukkit.getServer;
-import static vasys.mehaniksspacecore.MehaniksSpaceCore.MehaniksSpaceWorldMap;
-import static vasys.mehaniksspacecore.MehaniksSpaceCore.fuelItems;
+import net.kyori.adventure.text.Component;
 
 public class MehaniksSpaceTasks {
     public static Plugin plugin = MehaniksSpaceCore.getPlugin(MehaniksSpaceCore.class);
+
     public static void playerOxygenTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World w : getServer().getWorlds()) {
@@ -106,6 +122,7 @@ public class MehaniksSpaceTasks {
             }
         }, 20, 20);
     }
+
     public static void playerTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World w : getServer().getWorlds()) {
@@ -174,6 +191,7 @@ public class MehaniksSpaceTasks {
             }
         }, 20, 20);
     }
+
     public static void entityTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World world : getServer().getWorlds()) {
@@ -226,6 +244,7 @@ public class MehaniksSpaceTasks {
             }
         }, 100, 100);
     }
+
     public static void oilGeneratorTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World world : getServer().getWorlds()) {
@@ -280,6 +299,7 @@ public class MehaniksSpaceTasks {
             }
         }, 40, 40);
     }
+
     public static void oxygenGeneratorTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World world : getServer().getWorlds()) {
@@ -350,6 +370,7 @@ public class MehaniksSpaceTasks {
             };
         }, 100, 100);
     }
+
     public static void oxygenShieldTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World world : getServer().getWorlds()) {
@@ -445,6 +466,7 @@ public class MehaniksSpaceTasks {
             };
         }, 100, 100);
     }
+
     public static void rocketTask() {
         getServer().getScheduler().scheduleSyncRepeatingTask(plugin, () -> {
             for (World world : getServer().getWorlds()) {
@@ -570,6 +592,22 @@ public class MehaniksSpaceTasks {
                 }
             };
         }, 100, 100);
+    }
+
+    public static void meteorWorldsTask() {
+        for (World world : getServer().getWorlds()) {
+            if (MeteorWorldMap.containsKey(world.getName())) {
+                
+            }
+        }
+    }
+
+    public static void meteorSpawnTask(World world, Integer minExplosionPower, Integer maxExplosionPower, Integer minSpawnDelay, Integer maxSpawnDelay, List<String> types) {
+        Random random = new Random();
+        for (Chunk chunk : world.getLoadedChunks()) {
+            
+        }
+        getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {meteorSpawnTask(world, minExplosionPower, maxExplosionPower, minSpawnDelay, maxSpawnDelay, types);}, random.nextInt((maxSpawnDelay - minSpawnDelay) + 1) + minSpawnDelay);
     }
 
 //    public static void other() {

@@ -26,3 +26,15 @@ fuelItems:
   - cooked_salmon
   - ink_sac
   - glow_ink_sac
+
+worlds_with_meteors:
+  world:
+    minExplosionPower: 1.0
+    maxExplosionPower: 3.0
+    minSpawnDelay: 864000
+    maxSpawnDelay: 1728000
+    types:
+      - titanium
+      - lithium
+      - nasturan
+      - meteoric_iron
